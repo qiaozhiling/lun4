@@ -1,4 +1,4 @@
-package com.qzl.lun4
+package com.qzl.cloudalbum
 
 import org.junit.Test
 
