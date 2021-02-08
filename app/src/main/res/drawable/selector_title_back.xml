@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <item android:drawable="@mipmap/title_back_unpressed" android:state_pressed="false" tools:ignore="ResourceCycle" />
+    <item android:drawable="@mipmap/title_back_pressed" android:state_pressed="true" tools:ignore="ResourceCycle" />
+
+</selector>

@@ -10,7 +10,7 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/logo"
+        android:src="@mipmap/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -33,11 +33,12 @@
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <EditText
+        android:maxLength="15"
         android:id="@+id/et_username"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/edit_shape"
+        android:background="@drawable/shape_edit"
         android:gravity="center"
         android:hint="用户名"
         android:inputType="text"
@@ -49,13 +50,14 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_Title" />
 
     <EditText
-        android:background="@drawable/edit_shape"
+        android:background="@drawable/shape_edit"
         android:id="@+id/et_password"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
         android:hint="密码"
+        android:maxLength="15"
         android:inputType="textPassword"
         android:maxLines="1"
         android:padding="7dp"
@@ -83,6 +85,7 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:text="点我注册"
+        android:textColor="@drawable/selector_reg"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/checkBox2"
         app:layout_constraintEnd_toEndOf="@+id/btn_login"

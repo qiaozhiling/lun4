@@ -12,6 +12,7 @@ class FileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file)
 
+        supportActionBar?.hide()
         //设置菜单
         MyHelper.setMyPopMenu(this, titleMeun)
 
