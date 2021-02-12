@@ -1,4 +1,4 @@
-package com.qzl.cloudalbum.retrofit
+package com.qzl.cloudalbum.internet
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
