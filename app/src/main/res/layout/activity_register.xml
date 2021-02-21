@@ -8,7 +8,6 @@
 
 
     <EditText
-        android:maxLength="15"
         android:id="@+id/reg_et_username"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -16,6 +15,7 @@
         android:gravity="center"
         android:hint="请输入用户名"
         android:inputType="text"
+        android:maxLength="15"
         android:maxLines="1"
         android:padding="7dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,10 +23,26 @@
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.088" />
+        app:layout_constraintVertical_bias="0.099" />
 
     <EditText
+        android:id="@+id/reg_et_email"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/shape_edit"
+        android:gravity="center"
+        android:hint="请输入邮箱"
+        android:inputType="text"
         android:maxLength="15"
+        android:maxLines="1"
+        android:padding="7dp"
+        app:layout_constraintEnd_toEndOf="@+id/et_username"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/reg_et_username"
+        app:layout_constraintTop_toBottomOf="@+id/reg_et_username" />
+
+    <EditText
         android:id="@+id/reg_et_password"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -35,12 +51,13 @@
         android:gravity="center"
         android:hint="请输入密码"
         android:inputType="textPassword"
+        android:maxLength="15"
         android:maxLines="1"
         android:padding="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/et_username"
+        app:layout_constraintEnd_toEndOf="@+id/reg_et_email"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/reg_et_username"
-        app:layout_constraintTop_toBottomOf="@+id/reg_et_username" />
+        app:layout_constraintStart_toStartOf="@+id/reg_et_email"
+        app:layout_constraintTop_toBottomOf="@+id/reg_et_email" />
 
     <EditText
         android:maxLength="15"
@@ -63,7 +80,7 @@
         android:id="@+id/reg_button"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="36dp"
         android:padding="5dp"
         android:text="注册账号"
         android:textSize="20sp"

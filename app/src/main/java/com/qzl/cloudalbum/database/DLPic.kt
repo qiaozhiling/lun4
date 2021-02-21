@@ -5,8 +5,9 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 import java.util.*
 
+
 @Entity
-data class DLPic(var name: String, var time: String, var path: String) {
+data class DLPic(var name: String, var dLTime: String, var localPath: String) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }

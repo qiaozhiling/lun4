@@ -33,34 +33,36 @@
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <EditText
-        android:maxLength="15"
         android:id="@+id/et_username"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/shape_edit"
         android:gravity="center"
-        android:hint="用户名"
+        android:hint="邮箱"
         android:inputType="text"
+        android:maxLength="30"
         android:maxLines="1"
         android:padding="7dp"
+        android:text="964413011@qq.com "
         app:layout_constraintEnd_toEndOf="@+id/tv_Title"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="@+id/tv_Title"
         app:layout_constraintTop_toBottomOf="@+id/tv_Title" />
 
     <EditText
-        android:background="@drawable/shape_edit"
         android:id="@+id/et_password"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:background="@drawable/shape_edit"
         android:gravity="center"
         android:hint="密码"
-        android:maxLength="15"
         android:inputType="textPassword"
+        android:maxLength="20"
         android:maxLines="1"
         android:padding="7dp"
+        android:text="123456"
         app:layout_constraintEnd_toEndOf="@+id/et_username"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/et_username"
@@ -83,17 +85,29 @@
         android:id="@+id/tv_reg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:gravity="right"
         android:text="点我注册"
-        android:textColor="@drawable/selector_reg"
+        android:textColor="@drawable/selector_text"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@+id/autoLi"
-        app:layout_constraintEnd_toEndOf="@+id/btn_login"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/autoLi"
-        app:layout_constraintTop_toTopOf="@+id/autoLi" />
+        app:layout_constraintStart_toStartOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
-    <CheckBox
+    <TextView
+        android:id="@+id/tv_fgPw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="right"
+        android:text="忘记密码"
+        android:textColor="@drawable/selector_text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+
+    <!--<CheckBox
         android:id="@+id/remPw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -110,6 +124,6 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_login"
         app:layout_constraintStart_toStartOf="@+id/btn_login"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

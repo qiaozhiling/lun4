@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <com.qzl.cloudalbum.other.TitleLayout
-        android:id="@+id/title"
+        android:id="@+id/mtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -24,7 +24,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_margin="8dp"
-            android:background="@mipmap/searchfile" />
+            android:src="@mipmap/searchfile" />
 
         <EditText
             android:id="@+id/search_edit"
@@ -40,16 +40,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_files"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16sp"
-        android:layout_marginRight="16sp" />
+        android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/mTipTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="正在加载......."
-        android:visibility="visible" />
 
 </LinearLayout>

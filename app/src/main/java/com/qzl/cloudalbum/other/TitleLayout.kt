@@ -16,7 +16,5 @@ class TitleLayout(context: Context, attrs: AttributeSet) : LinearLayout(context,
             val activity = context as Activity
             activity.finish()
         }
-
-
     }
 }
