@@ -1,9 +1,7 @@
 package com.qzl.cloudalbum.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
@@ -12,7 +10,7 @@ import android.widget.Toast
 import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.internet.CldAbService
 import com.qzl.cloudalbum.internet.ServiceCreator
-import com.qzl.cloudalbum.other.Helper
+import com.qzl.cloudalbum.other.UserHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -25,15 +23,28 @@ class LoginActivity : AppCompatActivity() {
             password:String
             cookie:String
      */
-    private lateinit var subItemJson: String
-
-    private val service = ServiceCreator.create(CldAbService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
+
         val sPf = getSharedPreferences("login_setting", Context.MODE_PRIVATE)
+
+        sPf.let {
+            if (it.getBoolean("isLogged", false)) {
+                UserHelper.setCookie(it.getString("Cookie", null))
+                UserHelper.setId(it.getString("id", null))
+                UserHelper.setPassword(it.getString("password", null))
+                UserHelper.setShowHidden(it.getBoolean("showHidden", false))
+
+                /*Log.i("Helper", UserHelper.getCookie() + "")
+                Log.i("Helper", UserHelper.getShowHidden().toString())
+                Log.i("Helper", UserHelper.getId() + "")
+                Log.i("Helper", UserHelper.getPassword() + "")*/
+                toFile()
+            }
+        }
 
         //跳转注册
         tv_reg.setOnClickListener {
@@ -44,17 +55,6 @@ class LoginActivity : AppCompatActivity() {
         //忘记密码
         tv_fgPw.setOnClickListener {
             Toast.makeText(this, "请联系管理员", Toast.LENGTH_SHORT).show()
-        }
-
-
-        sPf.getString("Set-Cookie", null)?.let {
-            Helper.setCookie(it)
-            Thread {
-                if (Helper.cookieInDate(service)) {
-                    getFile()
-                    toFile()
-                }
-            }.start()
         }
 
         btn_login.setOnClickListener {
@@ -68,17 +68,18 @@ class LoginActivity : AppCompatActivity() {
                 val paswd = et_password.text.toString()
 
                 Thread {
-                    if (Helper.login(service, uid, paswd, sPf)) {
-                        Log.i("Login Main", "登入成功")
-                    } else {
-                        Looper.prepare()
-                        Toast.makeText(this@LoginActivity, "登入失败", Toast.LENGTH_SHORT).show()
-                        Looper.loop()
-                    }
-
-                    if (Helper.cookieInDate(service)) {
-                        getFile()
-                        toFile()
+                    UserHelper.login(uid, paswd, sPf).let {
+                        when {
+                            it == true -> {
+                                toFile()
+                            }
+                            it != true -> {
+                                Looper.prepare()
+                                Toast.makeText(this@LoginActivity, "登入失败", Toast.LENGTH_SHORT)
+                                    .show()
+                                Looper.loop()
+                            }
+                        }
                     }
                 }.start()
 
@@ -88,23 +89,20 @@ class LoginActivity : AppCompatActivity() {
     }//登入获取cookie
 
     private fun toFile() {
-        val name = "root"
-        val thisPath = ""
         val intent = Intent(this, FileActivity::class.java)
         //  /root
-        intent.putExtra("thisPath", thisPath + "/" + name)
-        intent.putExtra("thisName", name)
-        intent.putExtra("subItemJson", subItemJson)
+        intent.putExtra("thisPath", "/root")
+        intent.putExtra("thisName", "root")
         this.startActivity(intent)
         this.finish()
-
     }
 
-    private fun getFile() {
+}
+/*    private fun getFile() {
         var response: Response<ResponseBody>? = null
         val t = Thread {
             try {
-                response = service.getFileItem(Helper.getCookie(), "/root").clone().execute()
+                response = service.getFileItem(UserHelper.getCookie(), "/root").clone().execute()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -124,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
     }
-}
+}*/
 
 
 /*private fun getFileData(service: CldAbService) {

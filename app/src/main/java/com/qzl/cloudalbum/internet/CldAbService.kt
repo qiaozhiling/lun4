@@ -1,5 +1,7 @@
 package com.qzl.cloudalbum.internet
 
+import com.qzl.cloudalbum.other.UserHelper
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -22,6 +24,15 @@ interface CldAbService {
     @FormUrlEncoded
     fun login(@Field("uid") uid: String, @Field("paswd") pw: String): Call<LoginReception>
 
+    //注册
+    @POST("sign-up")
+    @FormUrlEncoded
+    fun register(
+        @Field("uid") uid: String,
+        @Field("paswd") pw: String,
+        @Field("name") name: String
+    ): Call<ResponseBody>
+
     //获取全部信息
     @GET("walk")
     fun getWalk(@Header("Cookie") cookie: String?): Call<ResponseBody>
@@ -29,13 +40,35 @@ interface CldAbService {
     //文件信息
     @GET("file")
     fun getFileItem(
-        @Header("Cookie") cookie: String? = null, @Query("path") path: String? = null
+        @Query("path") path: String?,
+        @Query("withHidden") withHidden: Boolean? = UserHelper.getShowHidden(),
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<ResponseBody>
 
-    //上传
-    @Multipart
+    //上传文件
     @POST("file")
-    fun upLoad(): Call<ResponseBody>
+    @Multipart
+    fun realupload(
+        @Query("path") targetPath: String?,
+        @Part file: MultipartBody.Part?,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<ResponseBody>
 
+    //新建文件夹
+    @POST("dir")
+    fun newBuild(
+        @Query("path") pathToCreate: String,
+        @Query("hidden") createHiddenDir: Boolean? = false,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<ResponseBody>
+
+    //删除文件
+    @DELETE("file")
+    fun delete(
+        @Query("path") path: String?,
+        @Query("paswd") password: String? = UserHelper.getPassword(),
+        @Query("removeTargetDir") removeTargetDir: Boolean? = true,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<ResponseBody>
 
 }
