@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(version = 1, entities = [DLPic::class])
+@Database(version = 1, entities = [DownloadPic::class])
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun getDLPicDao(): DLPicDao
+    abstract fun getDLPicDao(): DownloadPicDao
 
     companion object {
 

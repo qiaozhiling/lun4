@@ -2,73 +2,135 @@ package com.qzl.cloudalbum.internet
 
 import com.qzl.cloudalbum.other.UserHelper
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface CldAbService {
-    /*
-    sign-in 登录
-    sign-up 注册
-    sign-out 登出
-    /file {
-        get :获取指定文件或者文件夹
-        post 上传文件到指定位置
-        delete 删除文件 【/结尾清空文件夹，否则文件夹也会删除】
-    }
-    /walk 全部信息
-     */
 
-    //登入
+    //1检查当前的登录状态
+    @GET("session-status")
+    fun sessionStatus(
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
+    //2登入
     @POST("sign-in")
     @FormUrlEncoded
-    fun login(@Field("uid") uid: String, @Field("paswd") pw: String): Call<LoginReception>
+    fun loginForm(
+        @Field("uid") userEmailAddress: String,
+        @Field("paswd") userPassword: String
+    ): Call<MyResult<Boolean>>
 
-    //注册
+    //3注册
     @POST("sign-up")
     @FormUrlEncoded
     fun register(
-        @Field("uid") uid: String,
-        @Field("paswd") pw: String,
-        @Field("name") name: String
-    ): Call<ResponseBody>
+        @Field("uid") userEmailAddress: String,
+        @Field("paswd") userPassword: String,
+        @Field("name") userName: String
+    ): Call<MyResult<Boolean>>
 
-    //获取全部信息
-    @GET("walk")
-    fun getWalk(@Header("Cookie") cookie: String?): Call<ResponseBody>
+    //4檢查郵箱是否已經被使用
+    @POST("check-email")
+    @FormUrlEncoded
+    fun register(
+        @Field("email") emailAddress: String
+    ): Call<MyResult<Boolean>>
 
-    //文件信息
+    //5改密码
+    //如果新舊密碼一致或者原密碼錯誤將無法更改
+    @POST("reset-paswd")
+    @FormUrlEncoded
+    fun reSetPassword(
+        @Field("old") userOldPassword: String,
+        @Field("new") userNewPassword: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
+
+    //6获取文件信息
     @GET("file")
     fun getFileItem(
-        @Query("path") path: String?,
-        @Query("withHidden") withHidden: Boolean? = UserHelper.getShowHidden(),
-        @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<ResponseBody>
+        @Query("path") targetPath: String,
+        @Query("withHidden") ignoreHiddenItems: Boolean = UserHelper.getShowHidden(),
+        @Header("Cookie") cookie: String? =UserHelper.getCookie()
+    ): Call<MyResult<MyItem>>
 
-    //上传文件
+
+    //7上传文件
     @POST("file")
     @Multipart
-    fun realupload(
-        @Query("path") targetPath: String?,
-        @Part file: MultipartBody.Part?,
-        @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<ResponseBody>
+    fun upload(
+        @Query("path") fileUploadDirPath: String,
+        @Part fileToUpload: MultipartBody.Part,
+        @Header("Cookie") cookie: String? =UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
 
-    //新建文件夹
+    //8删除文件
+    @DELETE("file")
+    fun delete(
+        @Query("path") targetPathToRemove: String,
+        @Query("paswd") userPassword: String? = "123456",
+        @Header("Cookie") cookie: String? =UserHelper.getCookie(),
+        @Query("removeTargetDir") removeTargetDir: Boolean? = true
+    ): Call<MyResult<Boolean>>
+
+    //9新建文件夹
     @POST("dir")
     fun newBuild(
         @Query("path") pathToCreate: String,
-        @Query("hidden") createHiddenDir: Boolean? = false,
+        @Query("hidden") createHiddenDir:Boolean,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<ResponseBody>
+    ): Call<MyResult<Boolean>>
 
-    //删除文件
-    @DELETE("file")
-    fun delete(
-        @Query("path") path: String?,
-        @Query("paswd") password: String? = UserHelper.getPassword(),
-        @Query("removeTargetDir") removeTargetDir: Boolean? = true,
+    //10文件重命名
+    @POST("rename")
+    fun rename(
+        @Query("oldPath") targetFileOrDirPath: String,
+        @Query("newName") newNameOfTargetFileOrDir: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<ResponseBody>
+    ): Call<MyResult<Boolean>>
+
+    //11改变给定文件夹或者文件隐藏状态
+    @POST("file-status")
+    fun changeHideStatus(
+        @Query("path") targetFileTochangeStatus: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
+    //12恢复浅层删除的文件或者文件夹
+    //不会恢复子文件夹和文件
+    @POST("restore-file")
+    fun restore(
+        @Query("path") targetFileTochangeStatus: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
+    //13获取name email
+    @GET("user/base")
+    fun baseInfo(
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<MyUser>>
+
+    //14获取用户扩展信息
+    //容量 是否验证
+    @GET("user/information")
+    fun userInfo(
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<MyUserInformation>>
+
+    //15获取头像信息
+    @GET("user/image")
+    fun userHeadPic(
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<MyUserImage>>
+
+    //16上传头像
+    @POST("user/head")
+    @Multipart
+    fun uploadHeadPic(
+        @Part fileToUpload: MultipartBody.Part,
+        @Header("Cookie") cookie: String? =UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
 
 }

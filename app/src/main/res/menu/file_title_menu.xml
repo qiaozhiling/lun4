@@ -6,6 +6,13 @@
         android:id="@+id/userIf_item"
         android:title="个人信息" />
     <item
-        android:id="@+id/download_item"
+        android:id="@+id/search_item"
         android:title="搜索" />
+    <item
+        android:id="@+id/refresh_item"
+        android:title="刷新" />
+
+    <item
+        android:id="@+id/testttttttt"
+        android:title="test" />
 </menu>

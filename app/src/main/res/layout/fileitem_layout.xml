@@ -1,45 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@drawable/selector_fileitem"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_fileitem">
 
     <ImageView
-        android:id="@+id/image_fileitem"
+        android:id="@+id/image_dLitem"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:src="@mipmap/file"
+        android:layout_margin="3dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@mipmap/file" />
 
     <TextView
-        android:id="@+id/name_fileitem"
-        android:layout_width="wrap_content"
+        android:id="@+id/name_dLitem"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="11dp"
+        android:layout_toStartOf="@+id/checkbox_fileitem"
+        android:layout_toEndOf="@+id/image_dLitem"
+        android:ellipsize="middle"
+        android:singleLine="true"
         android:text="name"
         android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/image_fileitem"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/time_fileitem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name_dLitem"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toStartOf="@+id/checkbox_fileitem"
+        android:layout_toEndOf="@+id/image_dLitem"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:text="time"
+        android:textColor="@color/Textgray"
+        android:textSize="14sp" />
+
 
     <CheckBox
         android:id="@+id/checkbox_fileitem"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
         android:button="@drawable/selector_check"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/image_fileitem"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/name_fileitem"
-        app:layout_constraintTop_toTopOf="@+id/image_fileitem" />
+        android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

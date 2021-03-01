@@ -11,4 +11,6 @@
     <color name="AlbumBlue2">#16C8F5</color>
     <color name="Editgray">#E4E4E4</color>
     <color name="Textgray">#8F8F8F</color>
+    <color name="Gray1">#FFEBEBEB</color>
+    <color name="Gray2">#FFF3F3F3</color>
 </resources>

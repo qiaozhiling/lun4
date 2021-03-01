@@ -25,7 +25,8 @@ class PicActivity : AppCompatActivity() {
         val url = intent.getStringExtra("picUrl")
         val header = LazyHeaders.Builder().addHeader("cookie", UserHelper.getCookie()).build()
 
-        val requestOptions: RequestOptions = RequestOptions().fitCenter()
+        val requestOptions: RequestOptions = RequestOptions()
+            .fitCenter()
             .placeholder(R.mipmap.picloading)//加载中的占位符
             .error(R.mipmap.piclodingfail)//加载失败显示图片
 

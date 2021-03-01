@@ -4,24 +4,24 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.qzl.cloudalbum.R
-import com.qzl.cloudalbum.internet.CldAbService
-import com.qzl.cloudalbum.internet.ServiceCreator
 import com.qzl.cloudalbum.other.UserHelper
+import com.qzl.cloudalbum.other.netErr
+import com.qzl.cloudalbum.other.showToast
 import kotlinx.android.synthetic.main.activity_login.*
-import okhttp3.ResponseBody
-import org.json.JSONObject
-import retrofit2.Response
+import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.net.ConnectException
 
 class LoginActivity : AppCompatActivity() {
     /*
         login_setting(sDF):
+            isLogged:Boolean
             id:String
             password:String
-            cookie:String
+            Cookie:String
      */
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,20 +31,27 @@ class LoginActivity : AppCompatActivity() {
 
         val sPf = getSharedPreferences("login_setting", Context.MODE_PRIVATE)
 
-        sPf.let {
-            if (it.getBoolean("isLogged", false)) {
-                UserHelper.setCookie(it.getString("Cookie", null))
-                UserHelper.setId(it.getString("id", null))
-                UserHelper.setPassword(it.getString("password", null))
-                UserHelper.setShowHidden(it.getBoolean("showHidden", false))
 
-                /*Log.i("Helper", UserHelper.getCookie() + "")
-                Log.i("Helper", UserHelper.getShowHidden().toString())
-                Log.i("Helper", UserHelper.getId() + "")
-                Log.i("Helper", UserHelper.getPassword() + "")*/
-                toFile()
+        try {
+            lifecycleScope.launch {
+                //本地获取登入信息
+                sPf.let {
+                    if (it.getBoolean("isLogged", false)) {
+                        //已登陆 本地获取保存其他信息
+                        UserHelper.setCookie(it.getString("Cookie", ""))
+                        UserHelper.setEmail(it.getString("id", "")!!)
+                        UserHelper.setPassword(it.getString("password", null))
+                        UserHelper.setShowHidden(it.getBoolean("showHidden", false))
+
+                        toFile()//跳转文件页面
+                    }
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "???".showToast(this)
         }
+
 
         //跳转注册
         tv_reg.setOnClickListener {
@@ -57,31 +64,39 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "请联系管理员", Toast.LENGTH_SHORT).show()
         }
 
+        //登入按钮
         btn_login.setOnClickListener {
 
             if (et_username.text.toString() == "" || et_password.text.toString() == "") {
                 //账号或密码为空
                 Toast.makeText(this, "请输入账号密码", Toast.LENGTH_SHORT).show()
             } else {
-
+                //账号密码格式正确
                 val uid = et_username.text.toString()
                 val paswd = et_password.text.toString()
 
-                Thread {
-                    UserHelper.login(uid, paswd, sPf).let {
-                        when {
-                            it == true -> {
-                                toFile()
-                            }
-                            it != true -> {
-                                Looper.prepare()
-                                Toast.makeText(this@LoginActivity, "登入失败", Toast.LENGTH_SHORT)
-                                    .show()
-                                Looper.loop()
+                lifecycleScope.launch {
+                    try {
+                        UserHelper.login(uid, paswd, sPf).let {
+                            when {
+                                it -> {
+                                    toFile()
+                                }
+                                !it -> {
+                                    Toast.makeText(this@LoginActivity, "登入失败", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                             }
                         }
+                    } catch (e: ConnectException) {
+                        e.printStackTrace()
+                        netErr(this@LoginActivity)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        "其他异常".showToast(this@LoginActivity)
                     }
-                }.start()
+
+                }
 
             }
         }

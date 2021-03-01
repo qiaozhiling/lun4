@@ -11,6 +11,5 @@ import kotlinx.android.synthetic.main.title_layout.view.*
 class ToolTitleLayout(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
     init {
         LayoutInflater.from(context).inflate(R.layout.tooltitle_layout, this)
-
     }
 }
