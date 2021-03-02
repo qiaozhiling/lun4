@@ -18,9 +18,7 @@ import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
 import kotlinx.android.synthetic.main.activity_upload.*
 import kotlinx.android.synthetic.main.title_layout.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -155,29 +153,30 @@ class UploadActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when {
             requestCode == 2 && resultCode == Activity.RESULT_OK -> {
-                thread {
-                    val uri = data?.data
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        val uri = data?.data
 
-                    uri?.let {
+                        uri?.let {
 
-                        pic =
-                            Glide.with(this@UploadActivity).downloadOnly().load(it).submit()
-                                .get()
+                            pic =
+                                Glide.with(this@UploadActivity).downloadOnly().load(it).submit()
+                                    .get()
 
-                        val cursor = contentResolver.query(it, null, null, null, null)
-                        cursor?.moveToFirst()
+                            val cursor = contentResolver.query(it, null, null, null, null)
+                            cursor?.moveToFirst()
 
-                        picName = cursor?.getString(2)!!
-                        picSize = cursor.getString(5).toLong()
+                            picName = cursor?.getString(2)!!
+                            picSize = cursor.getString(5).toLong()
 
-                        cursor.close()
+                            cursor.close()
 
+                        }
                     }
-
+                    delay(100)
+                    Glide.with(this@UploadActivity).load(pic).into(picToUpload_Iv)
                 }
-                Glide.with(this@UploadActivity).load(pic).into(picToUpload_Iv)
             }
-
         }
     }
 }

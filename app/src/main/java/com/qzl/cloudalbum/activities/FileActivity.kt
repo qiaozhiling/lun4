@@ -204,8 +204,10 @@ class FileActivity : BaseActivity() {
         }//改变隐藏状态
 
         download_toolbox.setOnClickListener {
-            toolShow(false)
-            filesAdapter.download()
+            lifecycleScope.launch {
+                toolShow(false)
+                filesAdapter.download()
+            }
         }//下载
 
     }
@@ -214,9 +216,11 @@ class FileActivity : BaseActivity() {
     private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/) {
         val popMenu = PopupMenu(context, view)//菜单
         popMenu.menuInflater.inflate(R.menu.file_title_menu, popMenu.menu)//填充
+
         view.setOnClickListener {
             popMenu.show()
         }//设置点击标题栏菜单图标 显示菜单
+
         popMenu.setOnMenuItemClickListener {
             when (it.itemId) {
 

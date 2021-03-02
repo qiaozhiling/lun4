@@ -21,12 +21,12 @@ import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
+import kotlinx.coroutines.*
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.ConnectException
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.concurrent.thread
+import java.text.DateFormat.getDateTimeInstance
 
 class FilesAdapter(
     var subItemList: List<MyItem>,
@@ -144,23 +144,24 @@ class FilesAdapter(
 
     //删除选中
     suspend fun delete() {
-
+        val list = MutableList<String>(0) { i -> "" }
         for ((position, checked) in ischeck.withIndex()) {
-            try {
-                if (checked) {
-                    val item = subItemList[position]
-                    val path = "${thisPath}/${item.itemName}"
-                    UserHelper.deleteFile(path)
-                }
-            } catch (e: ConnectException) {
-                e.printStackTrace()
-                netErr(context)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                //test
-                "其他异常".showToast(context)
-            }
+            if (checked) {
+                val item = subItemList[position]
+                val path = "${thisPath}/${item.itemName}"
+                list.add(path)
 
+            }
+        }
+        try {
+            UserHelper.deleteFile(list)
+        } catch (e: ConnectException) {
+            e.printStackTrace()
+            netErr(context)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            //test
+            "其他异常".showToast(context)
         }
     }
 
@@ -196,94 +197,114 @@ class FilesAdapter(
     }
 
     //保存选中文件
-    fun download() {
-        for ((position, checked) in ischeck.withIndex()) {
-            if (checked) {
-                thread {
-                    try {
-                        val item = subItemList[position]
-                        val name = item.itemName
-                        val url = item.file?.fileURL
-                        //是文件 有url
-                        url?.let {
-                            val fileUrl = "http://39.104.71.38:8080$url"
-                            val path = context.getExternalFilesDir(null)?.path + "/" + name
-                            val dPic = DownloadPic(UserHelper.getEmail(), name, "", path, false)
+    suspend fun download() {
+        withContext(Dispatchers.IO) {
 
-                            val dLPDao = AppDatabase.getDatabase(context).getDLPicDao()
+            for ((position, checked) in ischeck.withIndex()) {
+                if (checked) {
+                    launch {
+                        try {
+                            val item = subItemList[position]
+                            val url = item.file?.fileURL
 
-                            val header =
-                                LazyHeaders.Builder()
-                                    .addHeader("Cookie", UserHelper.getCookie())
-                                    .build()
 
-                            val file =
-                                Glide.with(context).downloadOnly()
-                                    .load(GlideUrl(fileUrl, header))
-                                    .submit().get()
+                            //是文件 有url
+                            url?.let {
+                                val name = item.itemName
+                                val path = context.getExternalFilesDir(null)?.path + "/" + name
+                                val fileUrl = "http://39.104.71.38:8080$url"
 
-                            /*val storePath: String =
-                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                    .getPath().toString()
-                            val fos2 = FileOutputStream(storePath + "/" + name)*/
+                                val dPic =
+                                    DownloadPic(UserHelper.getEmail(), name, "下载中", path, false)
+                                val dLPDao = AppDatabase.getDatabase(context).getDLPicDao()
 
-                            val fis = FileInputStream(file)
-                            val fos1 =
-                                FileOutputStream(path)
+                                val header =
+                                    LazyHeaders.Builder()
+                                        .addHeader("Cookie", UserHelper.getCookie())
+                                        .build()
 
-                            val bytes = ByteArray(fis.available())
+                                val id = dLPDao.dLPicInsert(dPic)
 
-                            Log.i("out", "start")
-                            fis.read(bytes)
-                            fos1.write(bytes)
-                            file?.delete()
-                            Log.i("out", "over")
+                                val file =
+                                    Glide.with(context).downloadOnly()
+                                        .load(GlideUrl(fileUrl, header))
+                                        .submit().get()
 
-                            val formatter =
-                                SimpleDateFormat("YYYY-MM-dd HH:mm:ss") //设置时间格式
-                            formatter.setTimeZone(TimeZone.getTimeZone("GMT+08")) //设置时区
-                            val curDate = Date(System.currentTimeMillis()) //获取当前时间
-                            val createDate: String = formatter.format(curDate) //格式转换
+                                /*val storePath: String =
+                                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                        .getPath().toString()
+                                val fos2 = FileOutputStream(storePath + "/" + name)*/
 
-                            dLPDao.dLPicInsert(dPic)
+                                val fis = FileInputStream(file)
+                                val fos1 = FileOutputStream(path)
 
-                            /*context.sendBroadcast(
-                                Intent(
-                                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                    Uri.fromFile(File(context.getExternalFilesDir(null)?.path + "/a.jpg"))
-                                )
-                            )*/
-                            Log.i("outtttt", path)
-                            "${name}保存成功".showToast(context)
+                                val bytes = ByteArray(fis.available())
+
+                                fis.read(bytes)
+                                fos1.write(bytes)
+                                file?.delete()
+
+                                dPic.id = id
+                                dPic.success = true
+                                val createDate =
+                                    getDateTimeInstance().format(System.currentTimeMillis()) //设置时间格式
+                                dPic.dLTime = createDate
+                                dLPDao.dLPicUpdate(dPic)
+
+                                /*context.sendBroadcast(
+                                    Intent(
+                                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                                        Uri.fromFile(File(context.getExternalFilesDir(null)?.path + "/a.jpg"))
+                                    )
+                                )*/
+                                Log.i("outtttt", path)
+                                "${name}保存成功".showToast(context)
+                            }
+
+                        } catch (e: ConnectException) {
+                            e.printStackTrace()
+                            netErr(context)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            //test
+                            "其他异常".showToast(context)
                         }
-
-                    } catch (e: ConnectException) {
-                        e.printStackTrace()
-                        netErr(context)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        //test
-                        "其他异常".showToast(context)
                     }
                 }
             }
         }
 
+
     }
 
     //改变选中文件隐藏状态
     suspend fun changeFileState() {
-        try {
-            for ((position, checked) in ischeck.withIndex()) {
-                if (checked) {
-                    val item = subItemList[position]
-                    UserHelper.changeStatus("${thisPath}/${item.itemName}")
-                }
-            }
+        val list = MutableList<String>(0) { i -> "" }
+        for ((position, checked) in ischeck.withIndex()) {
+            if (checked) {
+                val item = subItemList[position]
+                val path = "${thisPath}/${item.itemName}"
+                list.add(path)
 
-        } catch (e: Exception) {
-            throw e
+            }
         }
+        try {
+            UserHelper.changeStatus(list)
+        } catch (e: ConnectException) {
+            e.printStackTrace()
+            netErr(context)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            //test
+            "其他异常".showToast(context)
+        }
+    }
+
+
+    //
+    fun savePic(file: File, name: String, path: String): Boolean {
+
+        return true
     }
 
     //

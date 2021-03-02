@@ -35,6 +35,7 @@ class RegisterActivity : AppCompatActivity() {
             val email = reg_et_email.text.toString()
             val password = reg_et_password.text.toString()
             val repassword = reg_et_repassword.text.toString()
+
             lifecycleScope.launch {
                 try {
 

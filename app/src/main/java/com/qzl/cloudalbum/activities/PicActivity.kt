@@ -23,18 +23,29 @@ class PicActivity : AppCompatActivity() {
         */
 
         val url = intent.getStringExtra("picUrl")
-        val header = LazyHeaders.Builder().addHeader("cookie", UserHelper.getCookie()).build()
 
-        val requestOptions: RequestOptions = RequestOptions()
-            .fitCenter()
-            .placeholder(R.mipmap.picloading)//加载中的占位符
-            .error(R.mipmap.piclodingfail)//加载失败显示图片
+        url?.let {
+            val picUrl = if (url.startsWith("http")) {
+                val header =
+                    LazyHeaders.Builder().addHeader("cookie", UserHelper.getCookie()).build()
+                GlideUrl(it, header)
+            } else {
+                it
+            }
 
-        Glide.with(this)
-            .load(GlideUrl(url, header))
-            .apply(requestOptions)
-            .thumbnail(0.2f)
-            .into(picimage)
+
+            val requestOptions: RequestOptions = RequestOptions()
+                .fitCenter()
+                .placeholder(R.mipmap.picloading)//加载中的占位符
+                .error(R.mipmap.piclodingfail)//加载失败显示图片
+
+            Glide.with(this)
+                .load(picUrl)
+                .apply(requestOptions)
+                .thumbnail(0.2f)
+                .into(picimage)
+        }
+
 
         pic_activity.setOnClickListener {
             finish()

@@ -53,7 +53,7 @@ interface CldAbService {
     fun getFileItem(
         @Query("path") targetPath: String,
         @Query("withHidden") ignoreHiddenItems: Boolean = UserHelper.getShowHidden(),
-        @Header("Cookie") cookie: String? =UserHelper.getCookie()
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<MyItem>>
 
 
@@ -63,25 +63,25 @@ interface CldAbService {
     fun upload(
         @Query("path") fileUploadDirPath: String,
         @Part fileToUpload: MultipartBody.Part,
-        @Header("Cookie") cookie: String? =UserHelper.getCookie()
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
 
     //8删除文件
     @DELETE("file")
     fun delete(
-        @Query("path") targetPathToRemove: String,
-        @Query("paswd") userPassword: String? = "123456",
-        @Header("Cookie") cookie: String? =UserHelper.getCookie(),
+        @Query("path") targetPathToRemove: List<String>,
+        @Query("paswd") userPassword: String? = UserHelper.getPassword(),
+        @Header("Cookie") cookie: String? = UserHelper.getCookie(),
         @Query("removeTargetDir") removeTargetDir: Boolean? = true
-    ): Call<MyResult<Boolean>>
+    ): Call<MyResult<List<MyResult<Boolean>>>>
 
     //9新建文件夹
     @POST("dir")
     fun newBuild(
         @Query("path") pathToCreate: String,
-        @Query("hidden") createHiddenDir:Boolean,
+        @Query("hidden") createHiddenDir: Boolean,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<MyResult<Boolean>>
+    ): Call<MyResult<List<MyResult<Boolean>>>>
 
     //10文件重命名
     @POST("rename")
@@ -94,9 +94,9 @@ interface CldAbService {
     //11改变给定文件夹或者文件隐藏状态
     @POST("file-status")
     fun changeHideStatus(
-        @Query("path") targetFileTochangeStatus: String,
+        @Query("path") targetFileTochangeStatus: List<String>,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<MyResult<Boolean>>
+    ): Call<MyResult<List<MyResult<Boolean>>>>
 
     //12恢复浅层删除的文件或者文件夹
     //不会恢复子文件夹和文件
@@ -130,7 +130,21 @@ interface CldAbService {
     @Multipart
     fun uploadHeadPic(
         @Part fileToUpload: MultipartBody.Part,
-        @Header("Cookie") cookie: String? =UserHelper.getCookie()
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
 
+    //17发送用户邮箱验证
+    //发送邮箱验证到用户邮箱
+    @GET("user/verify")
+    fun verify(
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
+    //18发送用户邮箱验证
+    //检查验证码，更新用户验证状态
+    @POST("user/verify")
+    fun verify(
+        @Query("code") verifyCode: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
 }

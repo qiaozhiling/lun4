@@ -6,7 +6,7 @@ import androidx.room.*
 interface DownloadPicDao {
     //增
     @Insert
-    fun dLPicInsert(dLPic: DownloadPic): Long//返回生成的主键
+    suspend fun dLPicInsert(dLPic: DownloadPic): Long//返回生成的主键
 
     //删
     @Delete
