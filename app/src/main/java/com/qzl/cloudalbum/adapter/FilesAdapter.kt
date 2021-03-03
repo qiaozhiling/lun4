@@ -1,8 +1,10 @@
 package com.qzl.cloudalbum.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
-import android.util.Log
+import android.net.Uri
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +22,7 @@ import com.qzl.cloudalbum.database.DownloadPic
 import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
-import com.qzl.cloudalbum.other.showToast
+import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileInputStream
@@ -97,12 +99,13 @@ class FilesAdapter(
 
         if (itemType == "DIR") {//是文件夹
             holder.image_fileitem.setImageResource(R.mipmap.dir)
+            holder.time_fileitem.text = "DIR"
         } else if (itemType == "FILE") {//图片
+            holder.time_fileitem.text = "FILE"
             val url =
                 "http://39.104.71.38:8080${item.file?.thumbnailURL}"
 
             val header = LazyHeaders.Builder().addHeader("cookie", UserHelper.getCookie()).build()
-
             Glide.with(context).load(GlideUrl(url, header)).into(holder.image_fileitem)
         }
 
@@ -144,7 +147,7 @@ class FilesAdapter(
 
     //删除选中
     suspend fun delete() {
-        val list = MutableList<String>(0) { i -> "" }
+        val list =  mutableListOf<String>()
         for ((position, checked) in ischeck.withIndex()) {
             if (checked) {
                 val item = subItemList[position]
@@ -161,7 +164,7 @@ class FilesAdapter(
         } catch (e: Exception) {
             e.printStackTrace()
             //test
-            "其他异常".showToast(context)
+            "其他异常".showToastOnUi(context)
         }
     }
 
@@ -202,7 +205,7 @@ class FilesAdapter(
 
             for ((position, checked) in ischeck.withIndex()) {
                 if (checked) {
-                    launch {
+                    launch(Dispatchers.IO) {
                         try {
                             val item = subItemList[position]
                             val url = item.file?.fileURL
@@ -230,18 +233,13 @@ class FilesAdapter(
                                         .load(GlideUrl(fileUrl, header))
                                         .submit().get()
 
-                                /*val storePath: String =
-                                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                        .getPath().toString()
-                                val fos2 = FileOutputStream(storePath + "/" + name)*/
-
                                 val fis = FileInputStream(file)
-                                val fos1 = FileOutputStream(path)
+                                val fos = FileOutputStream(path)
 
                                 val bytes = ByteArray(fis.available())
 
                                 fis.read(bytes)
-                                fos1.write(bytes)
+                                fos.write(bytes)
                                 file?.delete()
 
                                 dPic.id = id
@@ -251,14 +249,8 @@ class FilesAdapter(
                                 dPic.dLTime = createDate
                                 dLPDao.dLPicUpdate(dPic)
 
-                                /*context.sendBroadcast(
-                                    Intent(
-                                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                        Uri.fromFile(File(context.getExternalFilesDir(null)?.path + "/a.jpg"))
-                                    )
-                                )*/
-                                Log.i("outtttt", path)
-                                "${name}保存成功".showToast(context)
+                                "${name}保存成功".showToastOnUi(context)
+
                             }
 
                         } catch (e: ConnectException) {
@@ -267,7 +259,7 @@ class FilesAdapter(
                         } catch (e: Exception) {
                             e.printStackTrace()
                             //test
-                            "其他异常".showToast(context)
+                            "其他异常".showToastOnUi(context)
                         }
                     }
                 }
@@ -279,7 +271,7 @@ class FilesAdapter(
 
     //改变选中文件隐藏状态
     suspend fun changeFileState() {
-        val list = MutableList<String>(0) { i -> "" }
+        val list = mutableListOf<String>()
         for ((position, checked) in ischeck.withIndex()) {
             if (checked) {
                 val item = subItemList[position]
@@ -296,7 +288,7 @@ class FilesAdapter(
         } catch (e: Exception) {
             e.printStackTrace()
             //test
-            "其他异常".showToast(context)
+            "其他异常".showToastOnUi(context)
         }
     }
 

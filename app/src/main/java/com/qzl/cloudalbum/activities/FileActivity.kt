@@ -21,6 +21,7 @@ import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
+import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.android.synthetic.main.activity_file.*
 import kotlinx.android.synthetic.main.title_layout.view.*
 import kotlinx.android.synthetic.main.toolbox_layout.*
@@ -71,7 +72,7 @@ class FileActivity : BaseActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 //测试提示
-                "其他异常".showToast(this@FileActivity)
+                "其他异常".showToastOnUi(this@FileActivity)
             }
         }
 
@@ -113,10 +114,10 @@ class FileActivity : BaseActivity() {
                     try {
                         val succee = UserHelper.newBuildDir("$thisPath/$name", checkBox.isChecked)
                         if (succee) {//创建成功
-                            "创建成功".showToast(this@FileActivity)//提示
+                            "创建成功".showToastOnUi(this@FileActivity)//提示
                             refreshFileList()//刷新列表
                         } else {
-                            "创建失败".showToast(this@FileActivity)
+                            "创建失败".showToastOnUi(this@FileActivity)
                         }
                     } catch (e: ConnectException) {
                         e.printStackTrace()
@@ -125,7 +126,7 @@ class FileActivity : BaseActivity() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                         //测试提示
-                        "其他异常".showToast(this@FileActivity)
+                        "其他异常".showToastOnUi(this@FileActivity)
                     }
                 }
 
@@ -139,6 +140,7 @@ class FileActivity : BaseActivity() {
 
         upload.setOnClickListener {
             val intent = Intent(this, UploadActivity::class.java)
+            intent.putExtra("upType", 1)
             intent.putExtra("thisPath", thisPath)
             startActivityForResult(intent, 1)
         }//上传图片
@@ -176,8 +178,8 @@ class FileActivity : BaseActivity() {
                     try {
                         if (filesAdapter.rename(newName)) {
                             refreshFileList()
-                            "成功".showToast(this@FileActivity)
-                        } else "失败".showToast(this@FileActivity)
+                            "成功".showToastOnUi(this@FileActivity)
+                        } else "失败".showToastOnUi(this@FileActivity)
                     } catch (e: Exception) {
                         netErr(this@FileActivity)
                     }
@@ -260,7 +262,7 @@ class FileActivity : BaseActivity() {
         }
     }
 
-    private fun toolShow(show: Boolean) {
+    private fun toolShow(show: Boolean, position: Int = -1) {
         if (show) {
             //设置工具栏显示
             mtitle.visibility = View.GONE
@@ -268,13 +270,17 @@ class FileActivity : BaseActivity() {
             mtoolbox.visibility = View.VISIBLE
             //设置CheckBox显示
             filesAdapter.isShowed = true
-            filesAdapter.ischeck = MutableList(subFileStorageList!!.size) { i -> false }
+            filesAdapter.ischeck = MutableList(filesAdapter.ischeck.size) { i -> false }
+            filesAdapter.ischeck[position] = true
+            Log.i("aaaaa", filesAdapter.ischeck.toString())
             filesAdapter.notifyDataSetChanged()
         } else {
+            //消失
             mtitle.visibility = View.VISIBLE
             mtooltitle.visibility = View.GONE
             mtoolbox.visibility = View.GONE
             filesAdapter.isShowed = false
+            Log.i("aaaaa", filesAdapter.ischeck.toString())
             filesAdapter.notifyDataSetChanged()
         }
     }
@@ -307,8 +313,8 @@ class FileActivity : BaseActivity() {
             }
 
             override fun setOnItemLongClick(position: Int): Boolean {
-                toolShow(true)
-                filesAdapter.ischeck[position] = true
+                toolShow(true, position)//显示工具栏
+                filesAdapter.notifyDataSetChanged()
                 return false
             }
 
@@ -353,7 +359,7 @@ class FileActivity : BaseActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 //测试提示
-                "其他异常".showToast(this@FileActivity)
+                "其他异常".showToastOnUi(this@FileActivity)
             }
 
         }

@@ -2,22 +2,13 @@ package com.qzl.cloudalbum.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.qzl.cloudalbum.R
-import com.qzl.cloudalbum.internet.CldAbService
-import com.qzl.cloudalbum.internet.ServiceCreator
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
-import com.qzl.cloudalbum.other.showToast
+import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.Exception
 import java.net.ConnectException
 
@@ -41,18 +32,18 @@ class RegisterActivity : AppCompatActivity() {
 
                     when {
                         name == "" ->
-                            "用户名为空".showToast(this@RegisterActivity)
+                            "用户名为空".showToastOnUi(this@RegisterActivity)
                         password != repassword || password == "" ->
-                            "密码错误".showToast(this@RegisterActivity)
+                            "密码错误".showToastOnUi(this@RegisterActivity)
                         !UserHelper.emailInLaw(email) ->
-                            "邮箱格式错误或已被注册".showToast(this@RegisterActivity)
+                            "邮箱格式错误或已被注册".showToastOnUi(this@RegisterActivity)
                         else -> {
                             val success = UserHelper.register(email, name, password)
                             this@RegisterActivity.let {
                                 if (success) {
-                                    "创建成功".showToast(it)
+                                    "创建成功".showToastOnUi(it)
                                     it.finish()
-                                } else "创建失败".showToast(it)
+                                } else "创建失败".showToastOnUi(it)
                             }
                         }
                     }
@@ -61,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
                     netErr(this@RegisterActivity)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    "其他异常".showToast(this@RegisterActivity)
+                    "其他异常".showToastOnUi(this@RegisterActivity)
                 }
             }
         }

@@ -81,7 +81,7 @@ interface CldAbService {
         @Query("path") pathToCreate: String,
         @Query("hidden") createHiddenDir: Boolean,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<MyResult<List<MyResult<Boolean>>>>
+    ): Call<MyResult<Boolean>>
 
     //10文件重命名
     @POST("rename")

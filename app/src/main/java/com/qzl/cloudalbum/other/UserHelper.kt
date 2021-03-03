@@ -195,12 +195,27 @@ object UserHelper {
     }
 
     //Throw 返回是否成功
-    //上传
+    //上传图片
     suspend fun uploadPic(parentPath: String, file: MultipartBody.Part): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val myResult =
                     ServiceCreator.create(CldAbService::class.java).upload(parentPath, file)
+                        .await()
+                !myResult.err
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    //Throw 返回是否成功
+    //上传头像
+    suspend fun uploadHeadPic(file: MultipartBody.Part): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val myResult =
+                    ServiceCreator.create(CldAbService::class.java).uploadHeadPic(file)
                         .await()
                 !myResult.err
             } catch (e: Exception) {
@@ -293,7 +308,7 @@ object UserHelper {
     //Throw
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine {
-            enqueue(object : Callback<T> {
+            this.enqueue(object : Callback<T> {
                 override fun onFailure(call: Call<T>, t: Throwable) {
                     it.resumeWithException(t)
                 }

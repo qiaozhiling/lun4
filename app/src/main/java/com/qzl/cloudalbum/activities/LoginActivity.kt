@@ -10,6 +10,7 @@ import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
+import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -32,8 +33,9 @@ class LoginActivity : AppCompatActivity() {
         val sPf = getSharedPreferences("login_setting", Context.MODE_PRIVATE)
 
 
-        try {
-            lifecycleScope.launch {
+
+        lifecycleScope.launch {
+            try {
                 //本地获取登入信息
                 sPf.let {
                     if (it.getBoolean("isLogged", false)) {
@@ -46,10 +48,10 @@ class LoginActivity : AppCompatActivity() {
                         toFile()//跳转文件页面
                     }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                "???".showToastOnUi(this@LoginActivity)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "???".showToast(this)
         }
 
 
@@ -93,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
                         netErr(this@LoginActivity)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        "其他异常".showToast(this@LoginActivity)
+                        "其他异常".showToastOnUi(this@LoginActivity)
                     }
 
                 }
