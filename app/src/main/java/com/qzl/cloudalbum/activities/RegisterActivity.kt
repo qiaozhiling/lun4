@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.qzl.cloudalbum.R
+import com.qzl.cloudalbum.internet.NetHelper
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToastOnUi
@@ -35,10 +36,11 @@ class RegisterActivity : AppCompatActivity() {
                             "用户名为空".showToastOnUi(this@RegisterActivity)
                         password != repassword || password == "" ->
                             "密码错误".showToastOnUi(this@RegisterActivity)
-                        !UserHelper.emailInLaw(email) ->
+                        !NetHelper.emailInLaw(email, this@RegisterActivity) ->
                             "邮箱格式错误或已被注册".showToastOnUi(this@RegisterActivity)
                         else -> {
-                            val success = UserHelper.register(email, name, password)
+                            val success =
+                                NetHelper.register(email, name, password, this@RegisterActivity)
                             this@RegisterActivity.let {
                                 if (success) {
                                     "创建成功".showToastOnUi(it)

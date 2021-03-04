@@ -49,6 +49,7 @@
 
 
     <CheckBox
+        android:checked="false"
         android:id="@+id/checkbox_fileitem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

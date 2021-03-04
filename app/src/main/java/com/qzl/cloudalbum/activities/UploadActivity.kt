@@ -11,6 +11,7 @@ import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.qzl.cloudalbum.R
+import com.qzl.cloudalbum.internet.NetHelper
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
@@ -22,6 +23,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.io.IOException
 import java.lang.Exception
 import java.net.ConnectException
 import java.net.URLEncoder
@@ -49,7 +51,6 @@ class UploadActivity : AppCompatActivity() {
                 titleText.text = "上传头像"
             }
         }
-        Log.i("uploadaaa", "oncreat")
 
         val intenT = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intenT.addCategory(Intent.CATEGORY_OPENABLE)
@@ -107,8 +108,12 @@ class UploadActivity : AppCompatActivity() {
                                         Glide.with(this@UploadActivity).load(R.mipmap.loding)
                                             .into(imageloding)
 
-
-                                        if (UserHelper.uploadPic(parentPath, file)) {
+                                        if (NetHelper.uploadPic(
+                                                parentPath,
+                                                file,
+                                                this@UploadActivity
+                                            )
+                                        ) {
                                             "上传成功".showToastOnUi(this@UploadActivity)
 
                                             this@UploadActivity.setResult(RESULT_OK, intent)
@@ -119,17 +124,17 @@ class UploadActivity : AppCompatActivity() {
                                             imageloding.visibility = View.GONE
                                         }
 
-
-                                    } catch (e: ConnectException) {
-                                        imageloding.visibility = View.GONE
+                                    } catch (e: IOException) {
                                         e.printStackTrace()
-                                        //无网络提示
+                                    } catch (e: ConnectException) {
+                                        e.printStackTrace()
                                         netErr(this@UploadActivity)
                                     } catch (e: Exception) {
-                                        imageloding.visibility = View.GONE
                                         e.printStackTrace()
                                         //测试提示
                                         "其他异常".showToastOnUi(this@UploadActivity)
+                                    } finally {
+                                        imageloding.visibility = View.GONE
                                     }
 
 
@@ -154,7 +159,7 @@ class UploadActivity : AppCompatActivity() {
                                     .into(imageloding)
 
 
-                                if (UserHelper.uploadHeadPic(file)) {
+                                if (NetHelper.uploadHeadPic(file,this@UploadActivity)) {
                                     "上传成功".showToastOnUi(this@UploadActivity)
 
                                     this@UploadActivity.setResult(RESULT_OK, intent)

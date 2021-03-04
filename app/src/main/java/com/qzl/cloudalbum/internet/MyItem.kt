@@ -6,4 +6,20 @@ data class MyItem(
     val subItems: List<MyItem>,
     val file: MyFileStorage?,
     val hidden: Boolean
-)
+) {
+    var position = -1
+
+    private var checked: Boolean = false
+
+    fun changeCheckedStatus() {
+        checked = !checked
+    }
+
+    fun getCheckedStatus() = checked
+
+    fun reset() {
+        position = -1
+        checked = false
+    }
+
+}

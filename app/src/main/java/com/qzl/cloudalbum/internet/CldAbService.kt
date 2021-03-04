@@ -64,7 +64,7 @@ interface CldAbService {
         @Query("path") fileUploadDirPath: String,
         @Part fileToUpload: MultipartBody.Part,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<MyResult<Boolean>>
+    ): Call<MyResult<List<MyResult<Boolean>>>>
 
     //8删除文件
     @DELETE("file")

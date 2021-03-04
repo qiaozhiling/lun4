@@ -4,15 +4,18 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.qzl.cloudalbum.R
+import com.qzl.cloudalbum.internet.NetHelper
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
 import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.lang.Exception
 import java.net.ConnectException
 
@@ -32,8 +35,6 @@ class LoginActivity : AppCompatActivity() {
 
         val sPf = getSharedPreferences("login_setting", Context.MODE_PRIVATE)
 
-
-
         lifecycleScope.launch {
             try {
                 //本地获取登入信息
@@ -44,16 +45,16 @@ class LoginActivity : AppCompatActivity() {
                         UserHelper.setEmail(it.getString("id", "")!!)
                         UserHelper.setPassword(it.getString("password", null))
                         UserHelper.setShowHidden(it.getBoolean("showHidden", false))
-
-                        toFile()//跳转文件页面
+                        //跳转文件页面
+                        toFile()
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                Log.e("LoginActivity", "${e.javaClass}---${e.message}")
                 "???".showToastOnUi(this@LoginActivity)
             }
         }
-
 
         //跳转注册
         tv_reg.setOnClickListener {
@@ -79,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     try {
-                        UserHelper.login(uid, paswd, sPf).let {
+                        NetHelper.login(uid, paswd, sPf).let {
                             when {
                                 it -> {
                                     toFile()
@@ -93,17 +94,18 @@ class LoginActivity : AppCompatActivity() {
                     } catch (e: ConnectException) {
                         e.printStackTrace()
                         netErr(this@LoginActivity)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     } catch (e: Exception) {
                         e.printStackTrace()
                         "其他异常".showToastOnUi(this@LoginActivity)
                     }
-
                 }
 
             }
-        }
 
-    }//登入获取cookie
+        }
+    }
 
     private fun toFile() {
         val intent = Intent(this, FileActivity::class.java)
@@ -113,8 +115,8 @@ class LoginActivity : AppCompatActivity() {
         this.startActivity(intent)
         this.finish()
     }
-
 }
+
 /*    private fun getFile() {
         var response: Response<ResponseBody>? = null
         val t = Thread {

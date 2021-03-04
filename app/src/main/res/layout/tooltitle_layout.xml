@@ -38,7 +38,7 @@
         android:id="@+id/count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="已选择0个"
+        android:text="已选择%d个"
         android:textSize="17sp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"

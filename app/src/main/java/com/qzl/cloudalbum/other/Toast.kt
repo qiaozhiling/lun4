@@ -19,8 +19,8 @@ fun String.showToast(context: Context) {
     Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
 }
 
-fun netErr(context: Context) {
-    Looper.prepare()
-    Toast.makeText(context, "请检查网络", Toast.LENGTH_SHORT).show()
-    Looper.loop()
+suspend fun netErr(context: Context) {
+    withContext(Dispatchers.Main){
+        Toast.makeText(context, "请检查网络", Toast.LENGTH_SHORT).show()
+    }
 }

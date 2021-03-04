@@ -15,6 +15,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
 import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.internet.MyUserImage
+import com.qzl.cloudalbum.internet.NetHelper
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToast
@@ -39,22 +40,25 @@ class UserDetailActivity : BaseActivity() {
 
         refresh()
 
+        //点击查看头像
         headPic_Iv.setOnClickListener {
             if (userImage.setHeaded) {
                 val intent = Intent(this@UserDetailActivity, PicActivity::class.java)
                 intent.putExtra("picUrl", "http://39.104.71.38:8080" + userImage.fileX512URL)
                 startActivity(intent)
             }
-        }//点击查看头像
+        }
 
+        //长按上传头像
         headPic_Iv.setOnLongClickListener {
             val intent = Intent(this, UploadActivity::class.java)
             intent.putExtra("upType", 2)
             "请选择正方形图片".showToast(this)
             startActivityForResult(intent, 1)
             return@setOnLongClickListener false
-        }//长按上传头像
+        }
 
+        /*//验证邮箱
         user_email_Tv.setOnClickListener {
             lifecycleScope.launch {
                 try {
@@ -106,24 +110,26 @@ class UserDetailActivity : BaseActivity() {
 
             }
 
-        }
+        }*/
 
         back_Bt.setOnClickListener {
             finish()
         }
 
+        //注销
         sign_out_Bt.setOnClickListener {
             sPf.edit().clear().apply()
             UserHelper.setShowHidden(false)
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             ActivityCollector.finishAll()
-        }//注销
+        }
 
+        //显示 隐藏文件
         showHidden_Cb.setOnCheckedChangeListener { buttonView, isChecked ->
             UserHelper.setShowHidden(isChecked)
             sPf.edit().putBoolean("showHidden", isChecked).apply()
-        }//显示 隐藏文件
+        }
 
 
     }
@@ -136,11 +142,11 @@ class UserDetailActivity : BaseActivity() {
             launch {
                 try {
 
-                    val user = UserHelper.getUserBaseInfo()
+                    val user = NetHelper.getUserBaseInfo(this@UserDetailActivity)
                     user_name_Tv.text = user.name
                     user_email_Tv.text = user.emailAddress
-                    Log.i("aaaaaaa", user.name)
-                    Log.i("aaaaaaa", user.emailAddress)
+                    Log.i("UserDetailActivity", user.name)
+                    Log.i("UserDetailActivity", user.emailAddress)
 
                 } catch (e: ConnectException) {
                     e.printStackTrace()
@@ -156,8 +162,7 @@ class UserDetailActivity : BaseActivity() {
             //内存 验证信息
             launch {
                 try {
-
-                    val userInformation = UserHelper.getUserInfo()
+                    val userInformation = NetHelper.getUserInfo(this@UserDetailActivity)
                     verify = userInformation.verify
                     val usedSize = userInformation.formatUsedSize
                     val totalSize = userInformation.formatTotalSize
@@ -187,7 +192,7 @@ class UserDetailActivity : BaseActivity() {
             //加载头像
             launch(Dispatchers.IO) {
                 try {
-                    userImage = UserHelper.getHeadPic()
+                    userImage = NetHelper.getHeadPic(this@UserDetailActivity)
 
                     if (userImage.setHeaded) {
                         val picUrl256 = "http://39.104.71.38:8080" + userImage.fileX256URL
