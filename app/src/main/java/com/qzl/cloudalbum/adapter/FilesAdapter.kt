@@ -312,6 +312,10 @@ class FilesAdapter(
         Log.i("setSubItemList", checkstuse.toString())
     }
 
+    fun reSetSubItemList(list: List<MyItem>) {
+        subItemList = list
+    }
+
     fun getSubItemList(): List<MyItem> {
         val checkstuse = subItemList.map {
             it.getCheckedStatus()

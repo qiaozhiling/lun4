@@ -277,7 +277,6 @@ class FileActivity : BaseActivity() {
             thisItem = NetHelper.getFile(thisPath, this@FileActivity)//获取这一级的数据
             subItemsList = mSort(thisItem!!.subItems)//排序 子文件
 
-
             val checkstuse = getSubItemsList().map {
                 it.getCheckedStatus()
             }
@@ -290,7 +289,8 @@ class FileActivity : BaseActivity() {
                 setItemsClick()
             } else {
                 //adapter已有 更新数据
-                filesAdapter!!.reSetSubItemList()
+
+                filesAdapter!!.reSetSubItemList(subItemsList!!)
                 filesAdapter!!.notifyDataSetChanged()
             }
 
@@ -443,7 +443,7 @@ class FileActivity : BaseActivity() {
                 Log.i("FileActivity", "的子列表" + ccc.toString())
 
 
-                /*it.setItemChecked(position)//长按的选中*/
+                it.setItemChecked(position)//长按的选中
 
                 it.notifyDataSetChanged()
             } else {
@@ -461,15 +461,9 @@ class FileActivity : BaseActivity() {
     //？？？？？？？？？待定
     private fun getSubItemsList(): List<MyItem> {
 
-        lifecycleScope.launch {
-            thisItem = NetHelper.getFile(thisPath, this@FileActivity)//获取这一级的数据
-            subItemsList = mSort(thisItem!!.subItems)//排序 子文件
-        }
-
         val aaa = subItemsList?.map {
             it.getCheckedStatus()
         }
-
         Log.i("获取文件页面保存的SubItems", aaa.toString())
 
         return subItemsList!!
