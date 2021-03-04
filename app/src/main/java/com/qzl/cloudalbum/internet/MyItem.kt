@@ -7,7 +7,6 @@ data class MyItem(
     val file: MyFileStorage?,
     val hidden: Boolean
 ) {
-    var position = -1
 
     private var checked: Boolean = false
 
@@ -18,7 +17,6 @@ data class MyItem(
     fun getCheckedStatus() = checked
 
     fun reset() {
-        position = -1
         checked = false
     }
 

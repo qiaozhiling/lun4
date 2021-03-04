@@ -302,14 +302,8 @@ class FilesAdapter(
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     fun reSetSubItemList() {
-
         for (i in subItemList)
             i.reset()
-
-        val checkstuse = subItemList.map {
-            it.getCheckedStatus()
-        }
-        Log.i("setSubItemList", checkstuse.toString())
     }
 
     fun reSetSubItemList(list: List<MyItem>) {
@@ -317,10 +311,6 @@ class FilesAdapter(
     }
 
     fun getSubItemList(): List<MyItem> {
-        val checkstuse = subItemList.map {
-            it.getCheckedStatus()
-        }
-        Log.i("getSubItemList", checkstuse.toString())
         return subItemList
     }
 

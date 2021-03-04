@@ -248,8 +248,8 @@ class FileActivity : BaseActivity() {
         //下载
         download_toolbox.setOnClickListener {
             lifecycleScope.launch {
-                filesAdapter?.download()
                 toolShow(false)
+                filesAdapter?.download()
             }
         }
 
@@ -277,11 +277,6 @@ class FileActivity : BaseActivity() {
             thisItem = NetHelper.getFile(thisPath, this@FileActivity)//获取这一级的数据
             subItemsList = mSort(thisItem!!.subItems)//排序 子文件
 
-            val checkstuse = getSubItemsList().map {
-                it.getCheckedStatus()
-            }
-            Log.i("Fresh", checkstuse.toString())
-
             if (filesAdapter == null) {
                 //adapter未实例 设置adapter
                 setAdapter(getSubItemsList())
@@ -289,7 +284,6 @@ class FileActivity : BaseActivity() {
                 setItemsClick()
             } else {
                 //adapter已有 更新数据
-
                 filesAdapter!!.reSetSubItemList(subItemsList!!)
                 filesAdapter!!.notifyDataSetChanged()
             }
@@ -352,21 +346,20 @@ class FileActivity : BaseActivity() {
                 }
                 filesAdapter?.let {
 
-                    it.setItemChecked(position)
-                    Log.i("setOnItemCheckedChanged", "点击选框")
-                    val check = it.getCheckedItems()
+                    it.setItemChecked(position)//设置选中
 
+                    val check = it.getCheckedItems()
 
                     val num = check.size
                     //标题栏内容改变
-                    count.text = String.format(R.string.checkNumber.toString(), num)
+                    count.text = String.format(getString(R.string.checkNumber), num)
+
+                    Log.i("setOnItemCheckedChanged", "点击选框")
 
                     //选择不为过1个 重命名按钮消失
                     if (num != 1) rename_toolbox.visibility = View.GONE
                     else rename_toolbox.visibility = View.VISIBLE
 
-                    //////////////////
-                    it.getSubItemList()
 
                 }
             }
@@ -414,15 +407,10 @@ class FileActivity : BaseActivity() {
     }
 
     //排序列表
-    private fun mSort(list: List<MyItem>): List<MyItem> {
-        val list1 = list.filter { it.itemType == "DIR" }
-            .sortedBy { it.itemName }
-        val list2 = list.filter { it.itemType == "FILE" }
-            .sortedBy { it.itemName }
+    private fun mSort(list: List<MyItem>): List<MyItem> =
+        list.filter { it.itemType == "DIR" }.sortedBy { it.itemName }
+            .plus(list.filter { it.itemType == "FILE" }.sortedBy { it.itemName })
 
-        return list1.plus(list2)
-
-    }
 
     //工具栏显示
     private fun toolShow(show: Boolean, position: Int = -1) {
@@ -437,13 +425,9 @@ class FileActivity : BaseActivity() {
 
                 it.reSetSubItemList()  //选中状态归零
 
-                val ccc = getSubItemsList().map {
-                    it.getCheckedStatus()
-                }
-                Log.i("FileActivity", "的子列表" + ccc.toString())
-
-
                 it.setItemChecked(position)//长按的选中
+
+                count.text = String.format(getString(R.string.checkNumber), 1)
 
                 it.notifyDataSetChanged()
             } else {
@@ -451,6 +435,7 @@ class FileActivity : BaseActivity() {
                 mtitle.visibility = View.VISIBLE
                 mtooltitle.visibility = View.GONE
                 mtoolbox.visibility = View.GONE
+
                 it.isShowed = show//隐藏Checkbox
                 it.canChecked = false
                 it.notifyDataSetChanged()
@@ -460,12 +445,6 @@ class FileActivity : BaseActivity() {
 
     //？？？？？？？？？待定
     private fun getSubItemsList(): List<MyItem> {
-
-        val aaa = subItemsList?.map {
-            it.getCheckedStatus()
-        }
-        Log.i("获取文件页面保存的SubItems", aaa.toString())
-
         return subItemsList!!
     }
 
