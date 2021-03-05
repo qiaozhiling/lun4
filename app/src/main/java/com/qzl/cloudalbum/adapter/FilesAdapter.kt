@@ -301,13 +301,15 @@ class FilesAdapter(
     fun getTargetItemsPath(item: MyItem): String = "${thisPath}/${item.itemName}"
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fun reSetSubItemList() {
+    //重置 全选 全不选 ischecked 是否全选
+    fun setSubItemListCheck(isChecked: Boolean) {
         for (i in subItemList)
-            i.reset()
+            i.setCheck(isChecked)
     }
 
-    fun reSetSubItemList(list: List<MyItem>) {
-        subItemList = list
+    //跟新Items数据
+    fun reSetItemList(new: List<MyItem>) {
+        subItemList = new
     }
 
     fun getSubItemList(): List<MyItem> {

@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_user_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.lang.Exception
 import java.net.ConnectException
 
@@ -131,6 +132,9 @@ class UserDetailActivity : BaseActivity() {
             sPf.edit().putBoolean("showHidden", isChecked).apply()
         }
 
+        resetPassword_RL.setOnClickListener {
+            refresh()
+        }
 
     }
 
@@ -150,11 +154,11 @@ class UserDetailActivity : BaseActivity() {
 
                 } catch (e: ConnectException) {
                     e.printStackTrace()
-                    //无网络提示
                     netErr(this@UserDetailActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    //测试提示
                     "其他异常".showToastOnUi(this@UserDetailActivity)
                 }
             }
@@ -179,11 +183,11 @@ class UserDetailActivity : BaseActivity() {
 
                 } catch (e: ConnectException) {
                     e.printStackTrace()
-                    //无网络提示
                     netErr(this@UserDetailActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    //测试提示
                     "其他异常".showToastOnUi(this@UserDetailActivity)
                 }
 
@@ -208,14 +212,16 @@ class UserDetailActivity : BaseActivity() {
                                 .build()
                         val url = GlideUrl(picUrl256, header)
 
-                        val a = Glide.with(this@UserDetailActivity).asBitmap().load(url)
-                            .submit().get()
-
+                        /* val file = Glide.with(this@UserDetailActivity).downloadOnly().load(url)
+                             .submit().get()
+                         file.delete()*/
 
                         withContext(Dispatchers.Main) {
-                            headPic_Iv.setImageBitmap(a)
+                            Glide.with(this@UserDetailActivity).load(url).apply(requestOptions)
+                                .into(headPic_Iv)
 
                         }
+
                         /* Glide.with(this@UserDetailActivity)
                              .downloadOnly()
                              .load(GlideUrl(picUrl512, header))
@@ -224,11 +230,11 @@ class UserDetailActivity : BaseActivity() {
 
                 } catch (e: ConnectException) {
                     e.printStackTrace()
-                    //无网络提示
                     netErr(this@UserDetailActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    //测试提示
                     "其他异常".showToastOnUi(this@UserDetailActivity)
                 }
             }

@@ -16,8 +16,8 @@ data class MyItem(
 
     fun getCheckedStatus() = checked
 
-    fun reset() {
-        checked = false
+    fun setCheck(isChecked:Boolean) {
+        checked = isChecked
     }
 
 }

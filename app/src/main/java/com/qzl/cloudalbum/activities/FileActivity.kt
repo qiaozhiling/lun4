@@ -88,26 +88,22 @@ class FileActivity : BaseActivity() {
             toolShow(false)
         }
 
-        /*//全选
+        //全选
         tool_select_all.setOnClickListener {
             filesAdapter?.let {
 
                 if (it.getCheckedItems().size == getSubItemsList().size) {
-                    it.setSubItemList(getSubItemsList())
-                    count.text = String.format(R.string.checkNumber.toString(), 0)
+                    it.setSubItemListCheck(false)//设置全不选
+                    count.text = String.format(getString(R.string.checkNumber), 0)
                 } else {
-                    val list = getSubItemsList().map {
-                        it.isChecked = true
-                        it
-                    }
-
-                    it.setSubItemList(list)
-                    count.text = String.format(R.string.checkNumber.toString(), list.size)
+                    it.setSubItemListCheck(true)//设置全选
+                    count.text =
+                        String.format(getString(R.string.checkNumber), it.getCheckedItems().size)
 
                 }
                 it.notifyDataSetChanged()
             }
-        }*/
+        }
 
         //新建文件夹
         newbuild.setOnClickListener {
@@ -259,7 +255,18 @@ class FileActivity : BaseActivity() {
     override fun onRestart() {
         super.onRestart()
         lifecycleScope.launch {
-            refreshFileList()
+            try {
+                refreshFileList()
+            } catch (e: ConnectException) {
+                e.printStackTrace()
+                netErr(this@FileActivity)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                "其他异常".showToastOnUi(this@FileActivity)
+            }
+
         }
     }
 
@@ -284,7 +291,7 @@ class FileActivity : BaseActivity() {
                 setItemsClick()
             } else {
                 //adapter已有 更新数据
-                filesAdapter!!.reSetSubItemList(subItemsList!!)
+                filesAdapter!!.reSetItemList(subItemsList!!)
                 filesAdapter!!.notifyDataSetChanged()
             }
 
@@ -389,17 +396,24 @@ class FileActivity : BaseActivity() {
 
                 R.id.refresh_item -> {//刷新
                     lifecycleScope.launch {
-                        refreshFileList()
+                        try {
+                            refreshFileList()
+                        } catch (e: ConnectException) {
+                            e.printStackTrace()
+                            netErr(this@FileActivity)
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            "其他异常".showToastOnUi(this@FileActivity)
+                        }
+
                     }
                 }
 
                 //test cookie失效
                 R.id.testttttttt -> {
-                    val ccc = getSubItemsList().map {
-                        it.getCheckedStatus()
-                    }
-                    Log.i("文件页面", ccc.toString())
-
+                    finish()
                 }
             }//菜单内部点击事件
             return@setOnMenuItemClickListener true
@@ -423,7 +437,7 @@ class FileActivity : BaseActivity() {
                 //设置CheckBox显示
                 it.isShowed = show//显示Checkbox
 
-                it.reSetSubItemList()  //选中状态归零
+                it.setSubItemListCheck(false)  //选中状态归零
 
                 it.setItemChecked(position)//长按的选中
 

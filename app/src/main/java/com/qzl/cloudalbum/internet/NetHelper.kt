@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.qzl.cloudalbum.other.UserHelper
-import com.qzl.cloudalbum.other.showToastOnUi
+import com.qzl.cloudalbum.other.showToastOnUiLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -241,7 +241,7 @@ object NetHelper {
                             if (body.err) {
                                 GlobalScope.launch {
                                     //弹出message body.err
-                                    body.message.showToastOnUi(context)
+                                    body.message.replace("|", "\n").showToastOnUiLong(context)
                                 }
                                 throw IOException("err")
                             } else {
