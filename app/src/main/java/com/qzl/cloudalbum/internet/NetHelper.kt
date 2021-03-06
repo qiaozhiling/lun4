@@ -231,6 +231,24 @@ object NetHelper {
             }
         }
     }
+
+    // 返回是否成功
+    //013验证邮箱
+    @Throws(Exception::class)
+    suspend fun verifyEmail(code: String?, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result =
+                    if (code == null) ServiceCreator.create(CldAbService::class.java).verify()
+                        .await(context)
+                    else ServiceCreator.create(CldAbService::class.java).verify(code).await(context)
+
+                result
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // 网络请求

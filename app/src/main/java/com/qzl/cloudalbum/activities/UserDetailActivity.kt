@@ -56,12 +56,12 @@ class UserDetailActivity : BaseActivity() {
             return@setOnLongClickListener false
         }
 
-        /*//验证邮箱
+        //验证邮箱
         user_email_Tv.setOnClickListener {
             lifecycleScope.launch {
                 try {
                     if (!verify) {
-                        if (UserHelper.verifyEmail(null)) {
+                        if (NetHelper.verifyEmail(null, this@UserDetailActivity)) {
                             "验证码以发送至邮箱${UserHelper.getEmail()}".showToastOnUi(this@UserDetailActivity)
                             val myDialog: AlertDialog.Builder =
                                 AlertDialog.Builder(this@UserDetailActivity)
@@ -72,7 +72,7 @@ class UserDetailActivity : BaseActivity() {
                                 try {
                                     lifecycleScope.launch {
                                         val code = edit.text.toString()
-                                        if (UserHelper.verifyEmail(code)) {
+                                        if (NetHelper.verifyEmail(code, this@UserDetailActivity)) {
                                             "邮箱已验证".showToastOnUi(this@UserDetailActivity)
                                             refresh()
                                         } else {
@@ -83,7 +83,7 @@ class UserDetailActivity : BaseActivity() {
                                 } catch (e: ConnectException) {
                                     e.printStackTrace()
                                     //无网络提示
-                                    netErr(this@UserDetailActivity)
+                                    "无网络的样子".showToast(this@UserDetailActivity)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                     //测试提示
@@ -108,7 +108,7 @@ class UserDetailActivity : BaseActivity() {
 
             }
 
-        }*/
+        }
 
         back_Bt.setOnClickListener {
             finish()

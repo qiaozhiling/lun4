@@ -1,12 +1,11 @@
 package com.qzl.cloudalbum.activities
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
@@ -18,12 +17,11 @@ import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.internet.NetHelper
 import com.qzl.cloudalbum.other.*
 import kotlinx.android.synthetic.main.activity_file.*
+import kotlinx.android.synthetic.main.title_layout.*
 import kotlinx.android.synthetic.main.title_layout.view.*
 import kotlinx.android.synthetic.main.toolbox_layout.*
 import kotlinx.android.synthetic.main.tooltitle_layout.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.ConnectException
 
@@ -34,6 +32,7 @@ class FileActivity : BaseActivity() {
     private var filesAdapter: FilesAdapter? = null//adapter
     private var thisItem: MyItem? = null //这一级文件数据
     private var subItemsList: List<MyItem>? = null//子文件级列表
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -46,8 +45,8 @@ class FileActivity : BaseActivity() {
         thisPath = intent.getStringExtra("thisPath")!!//这一级的路径
         thisName = intent.getStringExtra("thisName")!!//这一级的名字
 
-        //设置菜单
-        setMyPopMenu(this, mtitle.titleMeun)//设置标题栏菜单
+        setMyPopMenu(this, mtitle.titleMeun,cancel_search_btn)//设置标题栏菜单
+
         //recyclerView设置
         rv_files.layoutManager = LinearLayoutManager(this)//recyclerView layoutManager设置
 
@@ -148,7 +147,6 @@ class FileActivity : BaseActivity() {
 
         }
 
-
         //上传图片
         upload.setOnClickListener {
             val intent = Intent(this, UploadActivity::class.java)
@@ -238,6 +236,14 @@ class FileActivity : BaseActivity() {
             }
         }
 
+        cancel_search_btn.setOnClickListener {
+            filesAdapter?.apply {
+                reSetItemList(subItemsList!!)
+                notifyDataSetChanged()
+            }
+            cancel_search_btn.visibility = View.GONE
+        }
+
     }
 
     //返回页面刷新列表
@@ -258,6 +264,14 @@ class FileActivity : BaseActivity() {
 
         }
     }
+
+
+   /* override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+       *//* //设置菜单
+        setMyPopMenu(this, mtitle.titleMeun)//设置标题栏菜单*//*
+        return super.onCreateView(name, context, attrs)
+    }*/
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -363,7 +377,7 @@ class FileActivity : BaseActivity() {
     }
 
     //设置菜单
-    private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/) {
+    private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/,b:Button) {
         val popMenu = PopupMenu(context, view)//菜单
         popMenu.menuInflater.inflate(R.menu.file_title_menu, popMenu.menu)//填充
 
@@ -380,7 +394,31 @@ class FileActivity : BaseActivity() {
                 }
 
                 R.id.search_item -> {//搜索
-                    "没做".showToast(this)
+                    AppDialog(this).setmTitle("请输入文件夹名").apply {
+                        setPositiveButton {
+                            val target = getText()
+                            if (target != "") {
+                                filesAdapter?.reSetItemList(subItemsList?.filter {
+                                    it.itemName.contains(target)
+                                }!!)
+                                filesAdapter?.notifyDataSetChanged()
+
+                                b.visibility=View.VISIBLE
+
+
+
+
+                            } else {
+                                "请输入".showToast(this@FileActivity)
+                            }
+                            dismiss()
+                        }
+                        setNegativeButton {
+                            "取消搜索".showToast(this@FileActivity)
+                            dismiss()
+                        }
+                        show()
+                    }
                 }
 
                 R.id.refresh_item -> {//刷新
