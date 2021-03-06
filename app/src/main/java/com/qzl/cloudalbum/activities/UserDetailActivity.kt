@@ -42,7 +42,7 @@ class UserDetailActivity : BaseActivity() {
         headPic_Iv.setOnClickListener {
             if (userImage.setHeaded) {
                 val intent = Intent(this@UserDetailActivity, PicActivity::class.java)
-                intent.putExtra("picUrl", "http://39.104.71.38:8080" + userImage.fileX512URL)
+                intent.putExtra("picUrl", "http://39.104.71.38:8080${userImage.fileX512URL}")
                 startActivity(intent)
             }
         }
@@ -68,7 +68,7 @@ class UserDetailActivity : BaseActivity() {
                             val edit = EditText(this@UserDetailActivity)
                             myDialog.setTitle("请输入验证码").setView(edit)
 
-                            myDialog.setPositiveButton("确定") { dialog, which ->
+                            myDialog.setPositiveButton("确定") { _, _ ->
                                 try {
                                     lifecycleScope.launch {
                                         val code = edit.text.toString()
@@ -124,13 +124,19 @@ class UserDetailActivity : BaseActivity() {
         }
 
         //显示 隐藏文件
-        showHidden_Cb.setOnCheckedChangeListener { buttonView, isChecked ->
+        showHidden_Cb.setOnCheckedChangeListener { _, isChecked ->
             UserHelper.setShowHidden(isChecked)
             sPf.edit().putBoolean("showHidden", isChecked).apply()
         }
 
-        resetPassword_RL.setOnClickListener {
+        re_myinfo.setOnClickListener {
+            "刷新".showToast(this)
             refresh()
+        }
+
+        resetPassword_RL.setOnClickListener {
+            val intent = Intent(this, ResetPasswordActivity::class.java)
+            startActivity(intent)
         }
 
         //重命名用户名
@@ -223,7 +229,7 @@ class UserDetailActivity : BaseActivity() {
 
                     if (userImage.setHeaded) {
                         val picUrl256 = "http://39.104.71.38:8080" + userImage.fileX256URL
-                        val picUrl512 = "http://39.104.71.38:8080" + userImage.fileX512URL
+                        /*  val picUrl512 = "http://39.104.71.38:8080" + userImage.fileX512URL*/
                         Log.i("headPic", picUrl256)
 
                         val requestOptions = RequestOptions()

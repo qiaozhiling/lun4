@@ -5,11 +5,11 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.internet.NetHelper
-import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
 import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.lang.Exception
 import java.net.ConnectException
 
@@ -18,15 +18,15 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        reg_button_cancel.setOnClickListener {
+        rsp_button_cancel.setOnClickListener {
             finish()
         }
 
-        reg_button.setOnClickListener {
-            val name = reg_et_username.text.toString()
-            val email = reg_et_email.text.toString()
-            val password = reg_et_password.text.toString()
-            val repassword = reg_et_repassword.text.toString()
+        rsp_button.setOnClickListener {
+            val name = rsp_et_username.text.toString()
+            val email = rsp_et_email.text.toString()
+            val password = rsp_et_password.text.toString()
+            val repassword = rsp_et_repassword.text.toString()
 
             lifecycleScope.launch {
                 try {
@@ -52,6 +52,8 @@ class RegisterActivity : AppCompatActivity() {
                 } catch (e: ConnectException) {
                     e.printStackTrace()
                     netErr(this@RegisterActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     "其他异常".showToastOnUi(this@RegisterActivity)

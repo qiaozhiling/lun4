@@ -26,15 +26,15 @@
             android:layout_marginBottom="11dp"
             android:src="@mipmap/headpic" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="12dp"
-            android:layout_toRightOf="@id/headPic_Iv"
-            android:orientation="horizontal">
+            android:layout_toRightOf="@id/headPic_Iv">
 
             <TextView
+                android:id="@+id/usname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="用户名："
@@ -42,10 +42,15 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:maxEms="9"
                 android:id="@+id/user_name_Tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="username"
+                android:layout_marginStart="0dp"
+                android:layout_toEndOf="@+id/usname"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="usernameggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
                 android:textColor="#353535"
                 android:textSize="16sp" />
 
@@ -53,9 +58,11 @@
                 android:id="@+id/userRename"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
-                android:src="@mipmap/rename" />
+                android:layout_toEndOf="@+id/user_name_Tv"
+                android:src="@mipmap/rename"
+                android:visibility="visible" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/email_Tv"
@@ -163,8 +170,6 @@
             android:textSize="16sp" />
 
         <CheckBox
-            android:scaleX="0.5"
-            android:scaleY="0.5"
             android:id="@+id/showHidden_Cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -174,15 +179,17 @@
             android:layout_marginTop="1dp"
             android:layout_marginEnd="1dp"
             android:layout_marginBottom="1dp"
-            android:button="@drawable/selector_switch" />
+            android:button="@drawable/selector_switch"
+            android:scaleX="0.5"
+            android:scaleY="0.5" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/resetPassword_RL"
-        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="58dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/selector_user_info_bar"
         android:clickable="true"
         android:paddingLeft="12dp">

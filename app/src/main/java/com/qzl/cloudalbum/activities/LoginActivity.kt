@@ -11,7 +11,6 @@ import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.internet.NetHelper
 import com.qzl.cloudalbum.other.UserHelper
 import com.qzl.cloudalbum.other.netErr
-import com.qzl.cloudalbum.other.showToast
 import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
@@ -64,7 +63,8 @@ class LoginActivity : AppCompatActivity() {
 
         //忘记密码
         tv_fgPw.setOnClickListener {
-            Toast.makeText(this, "请联系管理员", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, FindPasswordActivity::class.java)
+            startActivity(intent)
         }
 
         //登入按钮

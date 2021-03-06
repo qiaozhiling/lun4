@@ -249,6 +249,57 @@ object NetHelper {
             }
         }
     }
+
+    // 返回是否成功
+    //014发送找回密码code
+    @Throws(Exception::class)
+    suspend fun findPasword(email: String, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result =
+                    ServiceCreator.create(CldAbService::class.java).findPw(email).await(context)
+
+                result
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    // 返回是否成功
+    //014发送找回密码code
+    @Throws(Exception::class)
+    suspend fun findPasword(email: String, code: String, paswd: String, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result =
+                    ServiceCreator.create(CldAbService::class.java).findPw(email, code, paswd)
+                        .await(context)
+
+                result
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    // 返回是否成功
+    //015重置密碼
+    @Throws(Exception::class)
+    suspend fun resetPW(old: String, new: String, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result =
+                    ServiceCreator.create(CldAbService::class.java).reSetPassword(old, new)
+                        .await(context)
+
+                result
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // 网络请求

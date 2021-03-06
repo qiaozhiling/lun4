@@ -154,4 +154,28 @@ interface CldAbService {
         @Query("newName") newUserName: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<String>>
+
+    //20将生成的验证码发送给用户邮箱
+    @GET("/find-password")
+    fun findPw(
+        @Query("email") userEmailAddress: String
+    ): Call<MyResult<Boolean>>
+
+    //21验证验证码是否未过期且相等，如果验证通过就修改密码
+    @POST("/find-password")
+    fun findPw(
+        @Query("email") userEmailAddress: String,
+        @Query("code") findPasswordVerifyCode: String,
+        @Query("paswd") newPassword: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
+    //22用戶重置密碼
+    @POST("/reset-paswd")
+    fun resetPw(
+        @Query("old") userOldPassword: String,
+        @Query("new") userNewPassword: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
 }

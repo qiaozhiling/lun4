@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -249,6 +248,7 @@ class FileActivity : BaseActivity() {
     //返回页面刷新列表
     override fun onRestart() {
         super.onRestart()
+        cancel_search_btn.visibility = View.GONE
         lifecycleScope.launch {
             try {
                 refreshFileList()
@@ -377,7 +377,7 @@ class FileActivity : BaseActivity() {
     }
 
     //设置菜单
-    private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/,b:Button) {
+    private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/,b:ImageButton) {
         val popMenu = PopupMenu(context, view)//菜单
         popMenu.menuInflater.inflate(R.menu.file_title_menu, popMenu.menu)//填充
 

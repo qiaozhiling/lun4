@@ -7,12 +7,12 @@
         android:title="个人信息" />
     <item
         android:id="@+id/search_item"
-        android:title="搜索" />
+        android:title="该目录下搜索" />
     <item
         android:id="@+id/refresh_item"
         android:title="刷新" />
 
     <item
         android:id="@+id/testttttttt"
-        android:title="清空cookie" />
+        android:title="test清空cookie" />
 </menu>
