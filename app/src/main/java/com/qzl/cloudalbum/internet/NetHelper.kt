@@ -14,6 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.lang.StringBuilder
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -214,6 +215,22 @@ object NetHelper {
             }
         }
     }
+
+    //返回成功信息
+    //012用户名称重命名
+    @Throws(Exception::class)
+    suspend fun reUserName(newName: String, context: Context): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val data =
+                    ServiceCreator.create(CldAbService::class.java).userRename(newName)
+                        .await(context)
+                data
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // 网络请求
@@ -233,10 +250,10 @@ object NetHelper {
                 ) {
                     try {
                         val body = response.body()
-                        if (body == null) {
-                            throw IOException("body == null")
-                        } else if (response.code() != 200) {
+                        if (response.code() != 200) {
                             throw IOException("code !=200")
+                        } else if (body == null) {
+                            throw IOException("body == null")
                         } else {
                             if (body.err) {
                                 GlobalScope.launch {

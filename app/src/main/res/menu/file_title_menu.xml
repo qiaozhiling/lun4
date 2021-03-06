@@ -14,5 +14,5 @@
 
     <item
         android:id="@+id/testttttttt"
-        android:title="test" />
+        android:title="清空cookie" />
 </menu>

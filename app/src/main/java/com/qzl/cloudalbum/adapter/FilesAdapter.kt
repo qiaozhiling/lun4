@@ -44,10 +44,10 @@ class FilesAdapter(
         RecyclerView.ViewHolder(itemView), View.OnLongClickListener, View.OnClickListener,
         CompoundButton.OnCheckedChangeListener {
 
-        val image_fileitem: ImageView = itemView.findViewById(R.id.image_dLitem)//图
-        val name_fileitem: TextView = itemView.findViewById(R.id.name_dLitem)//名字Tv
-        val time_fileitem: TextView = itemView.findViewById(R.id.time_fileitem)//时间Tview(没做)
-        val checkbox_fileitem: CheckBox = itemView.findViewById(R.id.checkbox_fileitem)//选框Checkbox
+        val fileItemImage: ImageView = itemView.findViewById(R.id.image_dLitem)//图
+        val fileItemName: TextView = itemView.findViewById(R.id.name_dLitem)//名字Tv
+        val fileItemTime: TextView = itemView.findViewById(R.id.time_fileitem)//时间Tview(没做)
+        val fileItemCheckbox: CheckBox = itemView.findViewById(R.id.checkbox_fileitem)//选框Checkbox
 
         var mposition: Int = 0//列表位置
         var subItem: MyItem? = null//这个子项
@@ -56,7 +56,7 @@ class FilesAdapter(
         init {
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
-            checkbox_fileitem.setOnCheckedChangeListener(this)
+            fileItemCheckbox.setOnCheckedChangeListener(this)
         }
 
         //长按
@@ -103,29 +103,29 @@ class FilesAdapter(
         val itemType = item.itemType//子项类型
 
         if (itemType == "DIR") {//是文件夹
-            holder.image_fileitem.setImageResource(R.mipmap.dir)
-            holder.time_fileitem.text = "DIR"
+            holder.fileItemImage.setImageResource(R.mipmap.dir)
+            holder.fileItemTime.text = "DIR"
         } else if (itemType == "FILE") {//图片
-            holder.time_fileitem.text = "FILE"
+            holder.fileItemTime.text = "FILE"
             val url =
                 "http://39.104.71.38:8080${item.file?.thumbnailURL}"
 
             val header = LazyHeaders.Builder().addHeader("cookie", UserHelper.getCookie()).build()
-            Glide.with(context).load(GlideUrl(url, header)).into(holder.image_fileitem)
+            Glide.with(context).load(GlideUrl(url, header)).into(holder.fileItemImage)
         }
 
         if (isShowed) {
-            holder.checkbox_fileitem.visibility = View.VISIBLE
+            holder.fileItemCheckbox.visibility = View.VISIBLE
         } else {
-            holder.checkbox_fileitem.visibility = View.GONE
+            holder.fileItemCheckbox.visibility = View.GONE
         }
 
-        if (item.hidden) holder.name_fileitem.setTextColor(Color.GRAY)
-        else holder.name_fileitem.setTextColor(Color.BLACK)
+        if (item.hidden) holder.fileItemName.setTextColor(Color.GRAY)
+        else holder.fileItemName.setTextColor(Color.BLACK)
 
-        holder.checkbox_fileitem.isChecked = subItemList[position].getCheckedStatus()//选框选中
+        holder.fileItemCheckbox.isChecked = subItemList[position].getCheckedStatus()//选框选中
         holder.mposition = position//位置
-        holder.name_fileitem.text = itemName//显示内容 子项名字
+        holder.fileItemName.text = itemName//显示内容 子项名字
         holder.subItemPath = "$thisPath/$itemName"//子项路径
         holder.subItem = subItemList[position]
 
@@ -190,10 +190,9 @@ class FilesAdapter(
                 val newNameWithExtension = "$newName$extension"
 
                 val data = ServiceCreator.create(CldAbService::class.java)
-                    .rename(oldPath, newNameWithExtension).await(context)
+                    .fileRename(oldPath, newNameWithExtension).await(context)
 
-                return data
-
+                return true
             } else {
                 Log.e("FileAdapter", "rename list size != 1")
                 return false
@@ -208,7 +207,7 @@ class FilesAdapter(
     suspend fun download() {
         withContext(Dispatchers.IO) {
             val list = getCheckedItems()
-
+            "开始保存".showToastOnUi(context)
             for (item in list) {
 
                 launch(Dispatchers.IO) {
@@ -271,6 +270,8 @@ class FilesAdapter(
         try {
             val result = ServiceCreator
                 .create(CldAbService::class.java).changeHideStatus(list).await(context)
+
+            Log.i("adsad",result.toString())
             ////
         } catch (e: Exception) {
             throw e
@@ -294,11 +295,11 @@ class FilesAdapter(
     fun getCheckedItems(): List<MyItem> = subItemList.filter { it.getCheckedStatus() }
 
     //子项路径列表（”/root/{...}")
-    fun getTargetItemsPath(list: List<MyItem>): List<String> =
+    private fun getTargetItemsPath(list: List<MyItem>): List<String> =
         list.map { "${thisPath}/${it.itemName}" }
 
     //子项路径列表（”/root/{...}")
-    fun getTargetItemsPath(item: MyItem): String = "${thisPath}/${item.itemName}"
+    private fun getTargetItemsPath(item: MyItem): String = "${thisPath}/${item.itemName}"
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //重置 全选 全不选 ischecked 是否全选

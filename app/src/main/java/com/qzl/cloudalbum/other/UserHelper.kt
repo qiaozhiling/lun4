@@ -52,8 +52,13 @@ object UserHelper {
     }
 
     //文件名合法
-    fun nameInLaw(name: String): Boolean =
-        if (name == "") false else name.matches(Regex("^[^/\\\\?*<>:]+\$"))
+    fun nameInLaw(name: String): Boolean = when {
+        (name == "") -> false
+        (name.contains(" ")) -> false
+        (name.matches(Regex("^[^/\\\\?*<>:,]+\$"))) -> true
+        else ->false
+    }
+
 
     /*
 
@@ -152,10 +157,6 @@ object UserHelper {
         }
     }
 */
-
-
-
-
 
 
 }

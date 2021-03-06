@@ -85,11 +85,11 @@ interface CldAbService {
 
     //10文件重命名
     @POST("rename")
-    fun rename(
+    fun fileRename(
         @Query("oldPath") targetFileOrDirPath: String,
         @Query("newName") newNameOfTargetFileOrDir: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<MyResult<Boolean>>
+    ): Call<MyResult<String>>
 
     //11改变给定文件夹或者文件隐藏状态
     @POST("file-status")
@@ -147,4 +147,11 @@ interface CldAbService {
         @Query("code") verifyCode: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
+
+    //19重命名用户名
+    @POST("user/rename")
+    fun userRename(
+        @Query("newName") newUserName: String,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<String>>
 }

@@ -49,6 +49,12 @@
                 android:textColor="#353535"
                 android:textSize="16sp" />
 
+            <ImageView
+                android:id="@+id/userRename"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:src="@mipmap/rename" />
+
         </LinearLayout>
 
         <TextView

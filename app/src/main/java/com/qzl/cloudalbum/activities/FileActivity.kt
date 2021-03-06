@@ -8,9 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.PopupMenu
+import android.widget.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -18,15 +16,14 @@ import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.adapter.FilesAdapter
 import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.internet.NetHelper
-import com.qzl.cloudalbum.other.UserHelper
-import com.qzl.cloudalbum.other.netErr
-import com.qzl.cloudalbum.other.showToast
-import com.qzl.cloudalbum.other.showToastOnUi
+import com.qzl.cloudalbum.other.*
 import kotlinx.android.synthetic.main.activity_file.*
 import kotlinx.android.synthetic.main.title_layout.view.*
 import kotlinx.android.synthetic.main.toolbox_layout.*
 import kotlinx.android.synthetic.main.tooltitle_layout.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.ConnectException
 
@@ -60,6 +57,7 @@ class FileActivity : BaseActivity() {
                 if (!NetHelper.cookieInDate(this@FileActivity)) {//cookie过期 返回登入界面
                     sPf.edit().clear().apply()//清除spf数据
                     startActivity(Intent(this@FileActivity, LoginActivity::class.java))
+                    "登入信息过期".showToastOnUi(this@FileActivity)
                     ActivityCollector.finishAll()
                 } else {//cookie可用 加载文件信息
                     mtitle.titleText.text = thisName//标题为这一级的名字
@@ -107,26 +105,18 @@ class FileActivity : BaseActivity() {
 
         //新建文件夹
         newbuild.setOnClickListener {
-            //创建dialog
-            val view = LayoutInflater.from(this).inflate(R.layout.dialog, null)
-            AlertDialog.Builder(this).let {
-                it.setTitle("新建文件夹")
-                it.setMessage("请输入文件夹名").setView(view)
-
-                it.setPositiveButton("确定") { dialog, which ->
-                    val edit = view.findViewById(R.id.dir_name_Et) as EditText
-                    val checkBox = view.findViewById(R.id.create_hide_Cb) as CheckBox
-                    val name = edit.text.toString()
-
+            AppDialog(this).setmTitle("请输入文件夹名").apply {
+                setPositiveButton {
+                    val name = getText()
                     if (!UserHelper.nameInLaw(name)) {
-                        "文件名不合法".showToast(this)
+                        "文件名不合法".showToast(this@FileActivity)
                     } else {
                         lifecycleScope.launch {
                             try {
 
                                 if (NetHelper.newBuildDir(
                                         "$thisPath/$name",
-                                        checkBox.isChecked,
+                                        getCheckState(),
                                         this@FileActivity
                                     )
                                 ) {//创建成功
@@ -143,19 +133,21 @@ class FileActivity : BaseActivity() {
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 "其他异常".showToastOnUi(this@FileActivity)
+                            } finally {
+                                dismiss()
                             }
                         }
                     }
                 }
-
-                it.setNegativeButton("取消") { dialog, which ->
-                    "取消创建".showToast(this)
+                setNegativeButton {
+                    "取消创建".showToast(this@FileActivity)
+                    dismiss()
                 }
-                it.show()
+                show()
             }
 
-
         }
+
 
         //上传图片
         upload.setOnClickListener {
@@ -192,40 +184,37 @@ class FileActivity : BaseActivity() {
 
         //重命名
         rename_toolbox.setOnClickListener {
-            AlertDialog.Builder(this).let {
-                val editText = EditText(this)
-                it.setTitle("重命名").setMessage("请输入新文件名").setView(editText)
-                it.setPositiveButton("确定") { dialog, which ->
-                    val newName = editText.text.toString()
-
+            AppDialog(this).setmTitle("请输入新文件名").apply {
+                setPositiveButton {
+                    val newName = getText()
                     if (!UserHelper.nameInLaw(newName)) {
-                        "文件名不合法".showToast(this)
-                        return@setPositiveButton
-                    }
-
-                    lifecycleScope.launch {
-                        try {
-                            if (filesAdapter!!.rename(newName)) {
-                                refreshFileList()
-                                "重命名成功".showToastOnUi(this@FileActivity)
-                            } else "重命名失败".showToastOnUi(this@FileActivity)
-                        } catch (e: ConnectException) {
-                            e.printStackTrace()
-                            netErr(this@FileActivity)
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            "其他异常".showToastOnUi(this@FileActivity)
+                        "文件名不合法".showToast(this@FileActivity)
+                    } else {
+                        lifecycleScope.launch {
+                            try {
+                                if (filesAdapter!!.rename(newName)) {
+                                    refreshFileList()
+                                    "重命名成功".showToastOnUi(this@FileActivity)
+                                } else "重命名失败".showToastOnUi(this@FileActivity)
+                            } catch (e: ConnectException) {
+                                e.printStackTrace()
+                                netErr(this@FileActivity)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                "其他异常".showToastOnUi(this@FileActivity)
+                            } finally {
+                                dismiss()
+                            }
                         }
                     }
-
                 }
-
-                it.setNegativeButton("取消") { dialog, which ->
-                    "取消".showToast(this)
+                setNegativeButton {
+                    "取消重命名".showToast(this@FileActivity)
+                    dismiss()
                 }
-                it.show()
+                show()
             }
         }
 
@@ -413,7 +402,7 @@ class FileActivity : BaseActivity() {
 
                 //test cookie失效
                 R.id.testttttttt -> {
-                    finish()
+
                 }
             }//菜单内部点击事件
             return@setOnMenuItemClickListener true

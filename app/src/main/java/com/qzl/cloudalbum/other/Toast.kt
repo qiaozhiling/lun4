@@ -19,7 +19,6 @@ suspend fun String.showToastOnUiLong(context: Context) {
     }
 }
 
-
 fun String.showToast(context: Context) {
     Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
 }

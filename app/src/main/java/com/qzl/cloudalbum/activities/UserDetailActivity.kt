@@ -16,10 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.internet.MyUserImage
 import com.qzl.cloudalbum.internet.NetHelper
-import com.qzl.cloudalbum.other.UserHelper
-import com.qzl.cloudalbum.other.netErr
-import com.qzl.cloudalbum.other.showToast
-import com.qzl.cloudalbum.other.showToastOnUi
+import com.qzl.cloudalbum.other.*
 import kotlinx.android.synthetic.main.activity_user_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -136,6 +133,26 @@ class UserDetailActivity : BaseActivity() {
             refresh()
         }
 
+        userRename.setOnClickListener {
+            AppDialog(this).setmTitle("请输入新名字").apply {
+                setPositiveButton {
+                    lifecycleScope.launch {
+                        val newName = getText()
+                        val string = NetHelper.reUserName(newName, this@UserDetailActivity)
+                        string.showToastOnUi(this@UserDetailActivity)
+                        dismiss()
+                        refresh()
+                    }
+
+                }
+
+                setNegativeButton {
+                    "取消修改".showToast(this@UserDetailActivity)
+                    dismiss()
+                }
+                show()
+            }
+        }
     }
 
     //刷新
