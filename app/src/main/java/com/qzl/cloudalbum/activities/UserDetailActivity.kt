@@ -133,19 +133,25 @@ class UserDetailActivity : BaseActivity() {
             refresh()
         }
 
+        //重命名用户名
         userRename.setOnClickListener {
             AppDialog(this).setmTitle("请输入新名字").apply {
                 setPositiveButton {
-                    lifecycleScope.launch {
-                        val newName = getText()
-                        val string = NetHelper.reUserName(newName, this@UserDetailActivity)
-                        string.showToastOnUi(this@UserDetailActivity)
-                        dismiss()
-                        refresh()
+                    val newName = getText()
+                    if (newName.length in 1..16 && UserHelper.nameInLaw(newName)) {
+                        lifecycleScope.launch {
+
+                            val string = NetHelper.reUserName(newName, this@UserDetailActivity)
+                            string.showToastOnUi(this@UserDetailActivity)
+                            dismiss()
+                            refresh()
+
+
+                        }
+                    } else {
+                        "用户名不合法".showToast(this@UserDetailActivity)
                     }
-
                 }
-
                 setNegativeButton {
                     "取消修改".showToast(this@UserDetailActivity)
                     dismiss()
