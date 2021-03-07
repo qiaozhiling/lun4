@@ -300,6 +300,25 @@ object NetHelper {
         }
     }
 
+  // 返回是否成功
+    //016获取分享文件
+    @Throws(Exception::class)
+    suspend fun getShare(code: String, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result =
+                    ServiceCreator.create(CldAbService::class.java).catchShare(code)
+                        .await(context)
+
+                result
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // 网络请求

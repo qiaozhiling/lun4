@@ -13,6 +13,7 @@ interface CldAbService {
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
 
+
     //2登入
     @POST("sign-in")
     @FormUrlEncoded
@@ -169,4 +170,20 @@ interface CldAbService {
         @Query("paswd") newPassword: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
+
+    //22分享指定的文件
+    @POST("/share")
+    fun share(
+        @Query("targets") itemPathsToShare: List<String>,
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<String>>
+
+    //23分享指定的文件
+    @POST("/catch-share")
+    fun catchShare(
+        @Query("shareCode") targetShareCode: String,
+        @Query("targetPath") itemPathToSaveItems: String = "/root/",
+        @Header("Cookie") cookie: String? = UserHelper.getCookie()
+    ): Call<MyResult<Boolean>>
+
 }

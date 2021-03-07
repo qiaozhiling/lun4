@@ -288,6 +288,25 @@ class FilesAdapter(
 
     }
 
+    //分享文件
+    @Throws(Exception::class)
+    suspend fun shareFile() {
+        val list = getTargetItemsPath(getCheckedItems())
+        if (list.isEmpty()) {
+            "请选择文件".showToast(context)
+        } else {
+            try {
+                val shareCode = ServiceCreator
+                    .create(CldAbService::class.java).share(list).await(context)
+                UserHelper.copyIntoClipBoard(shareCode, context)
+                "分享码已保存至剪贴板".showToastOnUi(context)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////
     //保存file
     private fun saveFile(file: File?, pathToSvae: String) {

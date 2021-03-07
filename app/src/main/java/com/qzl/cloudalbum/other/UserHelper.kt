@@ -1,5 +1,10 @@
 package com.qzl.cloudalbum.other
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.text.TextUtils
+
 object UserHelper {
     private var cookie: String = ""
     private var email: String = ""
@@ -39,9 +44,22 @@ object UserHelper {
         (name == "") -> false
         (name.contains(" ")) -> false
         (name.matches(Regex("^[^/\\\\?*<>:,]+\$"))) -> true
-        else ->false
+        else -> false
     }
 
+    //把数据集设置（复制）到剪贴板
+    fun copyIntoClipBoard(content: String, context: Context) {
+        if (!TextUtils.isEmpty(content)) {
+            // 得到剪贴板管理器
+            val cmb = context.getSystemService(
+                Context.CLIPBOARD_SERVICE
+            ) as ClipboardManager
+            // 创建一个剪贴数据集，包含一个普通文本数据条目（需要复制的数据）
+            val clipData = ClipData.newPlainText(null, content)
+            // 把数据集设置（复制）到剪贴板
+            cmb.setPrimaryClip(clipData)
+        }
+    }
 
     /*
 

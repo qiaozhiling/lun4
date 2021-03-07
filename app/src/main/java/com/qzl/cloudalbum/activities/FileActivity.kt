@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.adapter.FilesAdapter
+import com.qzl.cloudalbum.internet.CldAbService
 import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.internet.NetHelper
+import com.qzl.cloudalbum.internet.NetHelper.await
+import com.qzl.cloudalbum.internet.ServiceCreator
 import com.qzl.cloudalbum.other.*
 import kotlinx.android.synthetic.main.activity_file.*
 import kotlinx.android.synthetic.main.title_layout.*
@@ -241,6 +244,15 @@ class FileActivity : BaseActivity() {
             }
         }
 
+        //分享
+        share_toolbox.setOnClickListener {
+            lifecycleScope.launch {
+                toolShow(false)
+                filesAdapter?.shareFile()
+            }
+        }
+
+        //取消搜索
         cancel_search_btn.setOnClickListener {
             filesAdapter?.apply {
                 reSetItemList(subItemsList!!)
@@ -248,6 +260,7 @@ class FileActivity : BaseActivity() {
             }
             cancel_search_btn.visibility = View.GONE
         }
+
 
     }
 
@@ -335,7 +348,7 @@ class FileActivity : BaseActivity() {
                         setItemChecked(position)
                         notifyItemChanged(position)
                     }
-                }else{
+                } else {
                     if (subItem?.itemType == "DIR") {//是文件夹 跳转下一目录
                         val subItemName = subItem.itemName
                         val intent = Intent(this@FileActivity, FileActivity::class.java)
@@ -441,6 +454,35 @@ class FileActivity : BaseActivity() {
                             "其他异常".showToastOnUi(this@FileActivity)
                         }
 
+                    }
+                }
+
+                R.id.get_share_item -> {
+                    AppDialog(this).setmTitle("请输入分享码").apply {
+                        setPositiveButton {
+                            val shareCode = getText()
+                            lifecycleScope.launch {
+                                try {
+                                    if (NetHelper.getShare(shareCode, this@FileActivity)) {
+                                        "已保存至/root/下".showToastOnUi(this@FileActivity)
+                                    }
+                                } catch (e: ConnectException) {
+                                    e.printStackTrace()
+                                    netErr(this@FileActivity)
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    "其他异常".showToastOnUi(this@FileActivity)
+                                }
+                            }
+                            dismiss()
+                        }
+                        setNegativeButton {
+                            "取消".showToast(this@FileActivity)
+                            dismiss()
+                        }
+                        show()
                     }
                 }
             }//菜单内部点击事件

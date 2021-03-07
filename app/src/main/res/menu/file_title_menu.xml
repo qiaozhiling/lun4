@@ -11,4 +11,7 @@
     <item
         android:id="@+id/refresh_item"
         android:title="刷新" />
+    <item
+        android:id="@+id/get_share_item"
+        android:title="获取分享文件" />
 </menu>
