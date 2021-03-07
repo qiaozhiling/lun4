@@ -330,20 +330,27 @@ class FileActivity : BaseActivity() {
             * subItem 子Item
             * */
             override fun setOnItemClick(position: Int, subItemPath: String, subItem: MyItem?) {
-
-                if (subItem?.itemType == "DIR") {//是文件夹 跳转下一目录
-                    val subItemName = subItem.itemName
-                    val intent = Intent(this@FileActivity, FileActivity::class.java)
-                    intent.putExtra("thisPath", subItemPath)
-                    intent.putExtra("thisName", subItemName)
-                    this@FileActivity.startActivity(intent)
-                } else if (subItem?.itemType == "FILE") {//图片 跳转查看
-                    Log.i("Onclick", "Not DIR")
-                    val picUrl = "http://39.104.71.38:8080${subItem.file?.fileURL}"//图片url
-                    val intent = Intent(this@FileActivity, PicActivity::class.java)
-                    intent.putExtra("picUrl", picUrl)
-                    this@FileActivity.startActivity(intent)
+                if (filesAdapter!!.isShowed) {
+                    filesAdapter!!.apply {
+                        setItemChecked(position)
+                        notifyItemChanged(position)
+                    }
+                }else{
+                    if (subItem?.itemType == "DIR") {//是文件夹 跳转下一目录
+                        val subItemName = subItem.itemName
+                        val intent = Intent(this@FileActivity, FileActivity::class.java)
+                        intent.putExtra("thisPath", subItemPath)
+                        intent.putExtra("thisName", subItemName)
+                        this@FileActivity.startActivity(intent)
+                    } else if (subItem?.itemType == "FILE") {//图片 跳转查看
+                        Log.i("Onclick", "Not DIR")
+                        val picUrl = "http://39.104.71.38:8080${subItem.file?.fileURL}"//图片url
+                        val intent = Intent(this@FileActivity, PicActivity::class.java)
+                        intent.putExtra("picUrl", picUrl)
+                        this@FileActivity.startActivity(intent)
+                    }
                 }
+
             }
 
             /*长按事件
