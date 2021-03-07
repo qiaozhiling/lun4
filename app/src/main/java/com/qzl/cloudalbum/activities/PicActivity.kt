@@ -28,9 +28,9 @@ class PicActivity : AppCompatActivity() {
             val picUrl = if (url.startsWith("http")) {
                 val header =
                     LazyHeaders.Builder().addHeader("cookie", UserHelper.getCookie()).build()
-                GlideUrl(it, header)
+                Header(GlideUrl(it, header))
             } else {
-                it
+                Header(it)
             }
 
 
@@ -40,7 +40,7 @@ class PicActivity : AppCompatActivity() {
                 .error(R.mipmap.piclodingfail)//加载失败显示图片
 
             Glide.with(this)
-                .load(picUrl)
+                .load(picUrl.data)
                 .apply(requestOptions)
                 .thumbnail(0.2f)
                 .into(picimage)
@@ -51,4 +51,6 @@ class PicActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    inner class Header<T>(val data: T)
 }

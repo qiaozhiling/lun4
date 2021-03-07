@@ -1,23 +1,15 @@
 package com.qzl.cloudalbum.adapter
 
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.qzl.cloudalbum.R
-import com.qzl.cloudalbum.activities.UserDetailActivity
-import com.qzl.cloudalbum.database.AppDatabase
 import com.qzl.cloudalbum.database.DownloadPic
-import com.qzl.cloudalbum.other.UserHelper
-import kotlinx.coroutines.*
 
 class DLPicAdapter(
     var picList: List<DownloadPic>,
@@ -27,10 +19,10 @@ class DLPicAdapter(
 
     inner class DownloadPicHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
-        val image_fileitem: ImageView = itemView.findViewById(R.id.image_dLitem)//图
-        val name_fileitem: TextView = itemView.findViewById(R.id.name_dLitem)//名字Tv
-        val time_fileitem: TextView = itemView.findViewById(R.id.time_fileitem)//时间Tview
-        var mposition: Int = 0//列表位置
+        val fileItemImage: ImageView = itemView.findViewById(R.id.image_dLitem)//图
+        val fileItemName: TextView = itemView.findViewById(R.id.name_dLitem)//名字Tv
+        val fileItemTime: TextView = itemView.findViewById(R.id.time_fileitem)//时间Tview
+        private var mposition: Int = 0//列表位置
         var pic: DownloadPic? = null
 
         init {
@@ -47,7 +39,7 @@ class DLPicAdapter(
 
         override fun onLongClick(v: View?): Boolean {
             if (onItemClickListener != null) {
-                return onItemClickListener!!.setOnItemLongClick(mposition,pic,itemView)
+                return onItemClickListener!!.setOnItemLongClick(mposition, pic, itemView)
             }
             return false
         }
@@ -67,9 +59,9 @@ class DLPicAdapter(
     override fun onBindViewHolder(holder: DownloadPicHolder, position: Int) {
         val pic = picList[position]//图片信息对象
         holder.pic = pic
-        holder.name_fileitem.text = pic.name
-        holder.time_fileitem.text = pic.dLTime
-        Glide.with(context).asBitmap().load(pic.localPath).into(holder.image_fileitem)
+        holder.fileItemName.text = pic.name
+        holder.fileItemTime.text = pic.dLTime
+        Glide.with(context).asBitmap().load(pic.localPath).into(holder.fileItemImage)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +75,7 @@ class DLPicAdapter(
             position: Int,
             pic: DownloadPic?,
             itemView: View
-        ):Boolean
+        ): Boolean
     }
 
     private var onItemClickListener: OnItemClickListener? = null

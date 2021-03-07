@@ -200,7 +200,7 @@ class UserDetailActivity : BaseActivity() {
                     val usedSize = userInformation.formatUsedSize
                     val totalSize = userInformation.formatTotalSize
                     info_contain_Tv.text =
-                        "${usedSize}/${totalSize}"
+                        String.format(getString(R.string.containFormat), usedSize, totalSize)
 
                     if (verify) {
                         email_Tv.setTextColor(Color.GRAY)

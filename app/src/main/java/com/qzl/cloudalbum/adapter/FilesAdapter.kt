@@ -22,6 +22,7 @@ import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.internet.NetHelper.await
 import com.qzl.cloudalbum.internet.ServiceCreator
 import com.qzl.cloudalbum.other.UserHelper
+import com.qzl.cloudalbum.other.showToast
 import com.qzl.cloudalbum.other.showToastOnUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -194,7 +195,7 @@ class FilesAdapter(
 
                 return true
             } else {
-                Log.e("FileAdapter", "rename list size != 1")
+                "文件数出错".showToast(context)
                 return false
             }
         } catch (e: Exception) {
@@ -205,77 +206,86 @@ class FilesAdapter(
     //保存选中文件
     @Throws(Exception::class)
     suspend fun download() {
-        withContext(Dispatchers.IO) {
-            val list = getCheckedItems()
-            "开始保存".showToastOnUi(context)
-            for (item in list) {
+        val list = getCheckedItems()
+        if (list.isEmpty()) {
+            "请选择文件".showToast(context)
+        } else {
+            withContext(Dispatchers.IO) {
 
-                launch(Dispatchers.IO) {
-                    try {
-                        val url = item.file?.fileURL
+                "开始保存".showToastOnUi(context)
+                for (item in list) {
 
-                        //是文件 有url
-                        url?.let {
-                            val name = item.itemName//文件名
-                            val path =
-                                context.getExternalFilesDir(null)?.path + "/" + name//本地路径
-                            val fileUrl = "http://39.104.71.38:8080$url"//文件url
+                    launch(Dispatchers.IO) {
+                        try {
+                            val url = item.file?.fileURL
 
-                            //插入数据库 获取主键
-                            val dLPDao = AppDatabase.getDatabase(context).getDLPicDao()
-                            val dPic =
-                                DownloadPic(UserHelper.getEmail(), name, "下载中...", path, false)
-                            val id = dLPDao.dLPicInsert(dPic)
+                            //是文件 有url
+                            url?.let {
+                                val name = item.itemName//文件名
+                                val path =
+                                    context.getExternalFilesDir(null)?.path + "/" + name//本地路径
+                                val fileUrl = "http://39.104.71.38:8080$url"//文件url
 
-                            //获取file
-                            val header =
-                                LazyHeaders.Builder()
-                                    .addHeader("Cookie", UserHelper.getCookie())
-                                    .build()
-                            val file =
-                                Glide.with(context).downloadOnly()
-                                    .load(GlideUrl(fileUrl, header))
-                                    .submit().get()
+                                //插入数据库 获取主键
+                                val dLPDao = AppDatabase.getDatabase(context).getDLPicDao()
+                                val dPic =
+                                    DownloadPic(UserHelper.getEmail(), name, "下载中...", path, false)
+                                val id = dLPDao.dLPicInsert(dPic)
 
-                            //保存到本地
-                            saveFile(file, path)
+                                //获取file
+                                val header =
+                                    LazyHeaders.Builder()
+                                        .addHeader("Cookie", UserHelper.getCookie())
+                                        .build()
+                                val file =
+                                    Glide.with(context).downloadOnly()
+                                        .load(GlideUrl(fileUrl, header))
+                                        .submit().get()
 
-                            //更新数据库
-                            dPic.id = id
-                            dPic.success = true
-                            val createDate =
-                                getDateTimeInstance().format(System.currentTimeMillis()) //设置时间格式
-                            dPic.dLTime = createDate
-                            dLPDao.dLPicUpdate(dPic)
+                                //保存到本地
+                                saveFile(file, path)
 
-                            //提示成功
-                            "${name}保存成功".showToastOnUi(context)
+                                //更新数据库
+                                dPic.id = id
+                                dPic.success = true
+                                val createDate =
+                                    getDateTimeInstance().format(System.currentTimeMillis()) //设置时间格式
+                                dPic.dLTime = createDate
+                                dLPDao.dLPicUpdate(dPic)
 
+                                //提示成功
+                                "${name}保存成功".showToastOnUi(context)
+
+                            }
+
+                        } catch (e: Exception) {
+                            throw e
                         }
-
-                    } catch (e: Exception) {
-                        throw e
                     }
-                }
 
+                }
             }
         }
+
     }
 
     //改变选中文件隐藏状态
     @Throws(Exception::class)
     suspend fun changeFileState() {
         val list = getTargetItemsPath(getCheckedItems())
+        if (list.isEmpty()) {
+            "请选择文件".showToast(context)
+        } else {
+            try {
+                val result = ServiceCreator
+                    .create(CldAbService::class.java).changeHideStatus(list).await(context)
 
-        try {
-            val result = ServiceCreator
-                .create(CldAbService::class.java).changeHideStatus(list).await(context)
-
-            Log.i("adsad",result.toString())
-            ////
-        } catch (e: Exception) {
-            throw e
+                ////
+            } catch (e: Exception) {
+                throw e
+            }
         }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -319,12 +329,6 @@ class FilesAdapter(
 
     fun setItemChecked(position: Int) {
         subItemList[position].changeCheckedStatus()
-
-        val checkstuse = subItemList.map {
-            it.getCheckedStatus()
-        }
-        Log.i("setItemChecked", checkstuse.toString())
-
     }
 
 }

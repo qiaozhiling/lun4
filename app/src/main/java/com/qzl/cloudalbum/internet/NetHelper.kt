@@ -14,7 +14,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
-import java.lang.StringBuilder
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -43,7 +42,8 @@ object NetHelper {
         return withContext(Dispatchers.IO) {
             try {
                 val myResult =
-                    ServiceCreator.create(CldAbService::class.java).getFileItem(path).await(context)
+                    ServiceCreator.create(CldAbService::class.java)
+                        .getFileItem(path).await(context)
                 myResult
             } catch (e: Exception) {
                 throw e

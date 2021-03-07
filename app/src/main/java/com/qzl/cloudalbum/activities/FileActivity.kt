@@ -44,7 +44,7 @@ class FileActivity : BaseActivity() {
         thisPath = intent.getStringExtra("thisPath")!!//这一级的路径
         thisName = intent.getStringExtra("thisName")!!//这一级的名字
 
-        setMyPopMenu(this, mtitle.titleMeun,cancel_search_btn)//设置标题栏菜单
+        setMyPopMenu(this, mtitle.titleMeun, cancel_search_btn)//设置标题栏菜单
 
         //recyclerView设置
         rv_files.layoutManager = LinearLayoutManager(this)//recyclerView layoutManager设置
@@ -103,7 +103,7 @@ class FileActivity : BaseActivity() {
 
         //新建文件夹
         newbuild.setOnClickListener {
-            AppDialog(this).setmTitle("请输入文件夹名").apply {
+            AppDialog(this).setmTitle("请输入文件夹名").showCheckBox(true).apply {
                 setPositiveButton {
                     val name = getText()
                     if (!UserHelper.nameInLaw(name)) {
@@ -162,10 +162,10 @@ class FileActivity : BaseActivity() {
 
         //删除选中
         delete_toolbox.setOnClickListener {
-            toolShow(false)//隐藏工具栏
             lifecycleScope.launch {
                 try {
                     filesAdapter?.delete()
+                    toolShow(false)//隐藏工具栏
                     refreshFileList()
                 } catch (e: ConnectException) {
                     e.printStackTrace()
@@ -221,8 +221,14 @@ class FileActivity : BaseActivity() {
                 try {
                     filesAdapter?.changeFileState()
                     refreshFileList()
-                } catch (e: Exception) {
+                } catch (e: ConnectException) {
+                    e.printStackTrace()
                     netErr(this@FileActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    "其他异常".showToastOnUi(this@FileActivity)
                 }
             }
         }
@@ -266,8 +272,8 @@ class FileActivity : BaseActivity() {
     }
 
 
-   /* override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-       *//* //设置菜单
+    /* override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        *//* //设置菜单
         setMyPopMenu(this, mtitle.titleMeun)//设置标题栏菜单*//*
         return super.onCreateView(name, context, attrs)
     }*/
@@ -282,6 +288,8 @@ class FileActivity : BaseActivity() {
             //转圈显示
             Glide.with(this@FileActivity).load(R.mipmap.loding).into(loding_iv)
             loding_iv.visibility = View.VISIBLE
+
+            cancel_search_btn.visibility = View.GONE
 
             //获取改目录数据
             thisItem = NetHelper.getFile(thisPath, this@FileActivity)//获取这一级的数据
@@ -355,29 +363,22 @@ class FileActivity : BaseActivity() {
                     return
                 }
                 filesAdapter?.let {
-
                     it.setItemChecked(position)//设置选中
-
                     val check = it.getCheckedItems()
-
                     val num = check.size
                     //标题栏内容改变
                     count.text = String.format(getString(R.string.checkNumber), num)
-
                     Log.i("setOnItemCheckedChanged", "点击选框")
-
                     //选择不为过1个 重命名按钮消失
                     if (num != 1) rename_toolbox.visibility = View.GONE
                     else rename_toolbox.visibility = View.VISIBLE
-
-
                 }
             }
         })
     }
 
     //设置菜单
-    private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/,b:ImageButton) {
+    private fun setMyPopMenu(context: Context, view: View/*设置菜单的View*/, b: ImageButton) {
         val popMenu = PopupMenu(context, view)//菜单
         popMenu.menuInflater.inflate(R.menu.file_title_menu, popMenu.menu)//填充
 
@@ -398,14 +399,12 @@ class FileActivity : BaseActivity() {
                         setPositiveButton {
                             val target = getText()
                             if (target != "") {
-                                filesAdapter?.reSetItemList(subItemsList?.filter {
-                                    it.itemName.contains(target)
+                                filesAdapter?.reSetItemList(subItemsList?.filter { item ->
+                                    item.itemName.contains(target)
                                 }!!)
                                 filesAdapter?.notifyDataSetChanged()
 
-                                b.visibility=View.VISIBLE
-
-
+                                b.visibility = View.VISIBLE
 
 
                             } else {
@@ -437,11 +436,6 @@ class FileActivity : BaseActivity() {
 
                     }
                 }
-
-                //test cookie失效
-                R.id.testttttttt -> {
-
-                }
             }//菜单内部点击事件
             return@setOnMenuItemClickListener true
         }
@@ -469,7 +463,7 @@ class FileActivity : BaseActivity() {
                 it.setItemChecked(position)//长按的选中
 
                 count.text = String.format(getString(R.string.checkNumber), 1)
-
+                rename_toolbox.visibility = View.VISIBLE
                 it.notifyDataSetChanged()
             } else {
                 //消失

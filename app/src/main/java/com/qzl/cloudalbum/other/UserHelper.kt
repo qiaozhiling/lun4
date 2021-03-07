@@ -1,22 +1,5 @@
 package com.qzl.cloudalbum.other
 
-import android.app.AlertDialog
-import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
-import android.view.LayoutInflater
-import com.qzl.cloudalbum.R
-import com.qzl.cloudalbum.internet.*
-import kotlinx.coroutines.*
-import okhttp3.MultipartBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
-
 object UserHelper {
     private var cookie: String = ""
     private var email: String = ""

@@ -90,7 +90,7 @@ class UploadActivity : AppCompatActivity() {
                         myDialog.setTitle("请输入文件名").setView(editText)
                         editText.setText(picName)
 
-                        myDialog.setPositiveButton("确定") { dialog, which ->
+                        myDialog.setPositiveButton("确定") { _, _ ->
                             val newName = editText.text.toString()
 
                             if (!UserHelper.nameInLaw(newName)) {
@@ -144,7 +144,7 @@ class UploadActivity : AppCompatActivity() {
 
                         }
 
-                        myDialog.setNegativeButton("取消") { dialog, which ->
+                        myDialog.setNegativeButton("取消") { _, _ ->
                             "取消".showToast(this)
                         }
                         myDialog.show()

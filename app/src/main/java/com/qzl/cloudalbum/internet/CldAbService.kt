@@ -94,7 +94,7 @@ interface CldAbService {
     //11改变给定文件夹或者文件隐藏状态
     @POST("file-status")
     fun changeHideStatus(
-        @Query("path") targetFileTochangeStatus: List<String>,
+        @Query("path") targetFileToChangeStatus: List<String>,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<List<MyResult<Boolean>>>>
 
@@ -102,7 +102,7 @@ interface CldAbService {
     //不会恢复子文件夹和文件
     @POST("restore-file")
     fun restore(
-        @Query("path") targetFileTochangeStatus: String,
+        @Query("path") targetFileToChangeStatus: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
 
@@ -169,13 +169,4 @@ interface CldAbService {
         @Query("paswd") newPassword: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
-
-    //22用戶重置密碼
-    @POST("/reset-paswd")
-    fun resetPw(
-        @Query("old") userOldPassword: String,
-        @Query("new") userNewPassword: String,
-        @Header("Cookie") cookie: String? = UserHelper.getCookie()
-    ): Call<MyResult<Boolean>>
-
 }

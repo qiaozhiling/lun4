@@ -13,12 +13,8 @@ import com.qzl.cloudalbum.database.AppDatabase
 import com.qzl.cloudalbum.database.DownloadPic
 import com.qzl.cloudalbum.other.UserHelper
 import kotlinx.android.synthetic.main.activity_downloaded.*
-import kotlinx.android.synthetic.main.activity_file.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.concurrent.thread
 
 class DownloadedActivity : AppCompatActivity() {
     private var list: List<DownloadPic>? = null

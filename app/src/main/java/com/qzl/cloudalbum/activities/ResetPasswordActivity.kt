@@ -1,7 +1,6 @@
 package com.qzl.cloudalbum.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.qzl.cloudalbum.R
