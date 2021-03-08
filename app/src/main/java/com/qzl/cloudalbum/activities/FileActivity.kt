@@ -9,14 +9,10 @@ import android.view.View
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.qzl.cloudalbum.R
 import com.qzl.cloudalbum.adapter.FilesAdapter
-import com.qzl.cloudalbum.internet.CldAbService
 import com.qzl.cloudalbum.internet.MyItem
 import com.qzl.cloudalbum.internet.NetHelper
-import com.qzl.cloudalbum.internet.NetHelper.await
-import com.qzl.cloudalbum.internet.ServiceCreator
 import com.qzl.cloudalbum.other.*
 import kotlinx.android.synthetic.main.activity_file.*
 import kotlinx.android.synthetic.main.title_layout.*
