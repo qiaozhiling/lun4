@@ -278,8 +278,6 @@ class FileActivity : BaseActivity() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                         "其他异常".showToastOnUi(this@FileActivity)
-                    } finally {
-                        isRefreshing = false
                     }
                 }
             }
@@ -328,8 +326,7 @@ class FileActivity : BaseActivity() {
     private suspend fun refreshFileList() {
         try {
             //转圈显示
-            Glide.with(this@FileActivity).load(R.mipmap.loding).into(loding_iv)
-            loding_iv.visibility = View.VISIBLE
+            swipere_file.isRefreshing = true
 
             cancel_search_btn.visibility = View.GONE
 
@@ -348,11 +345,10 @@ class FileActivity : BaseActivity() {
                 filesAdapter!!.notifyDataSetChanged()
             }
 
-            //转圈消失
-            loding_iv.visibility = View.GONE
-
         } catch (e: Exception) {
             throw e
+        }finally {
+            swipere_file.isRefreshing = false
         }
     }
 
