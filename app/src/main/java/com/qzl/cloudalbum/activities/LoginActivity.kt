@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
@@ -33,8 +34,17 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         val sPf = getSharedPreferences("login_setting", Context.MODE_PRIVATE)
+        val last = getSharedPreferences("last_login_setting", Context.MODE_PRIVATE)
+
+
+
 
         lifecycleScope.launch {
+
+            last.getString("lastEmail", null)?.let {
+                et_username.setText(it)
+            }
+
             try {
                 //本地获取登入信息
                 sPf.let {
@@ -83,6 +93,10 @@ class LoginActivity : AppCompatActivity() {
                         NetHelper.login(uid, paswd, sPf).let {
                             when {
                                 it -> {
+                                    last.edit().apply {
+                                        putString("lastEmail", uid)
+                                        apply()
+                                    }
                                     toFile()
                                 }
                                 !it -> {
