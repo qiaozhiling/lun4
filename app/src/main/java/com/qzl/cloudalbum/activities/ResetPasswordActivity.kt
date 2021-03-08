@@ -19,15 +19,15 @@ class ResetPasswordActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
 
-        rsp_button_cancel.setOnClickListener {
+        rsp_cancel_button.setOnClickListener {
             finish()
         }
 
-        rsp_button.setOnClickListener {
-            val email = rsp_et_username.text.toString()
-            val old = rsp_et_email.text.toString()
-            val new = rsp_et_password.text.toString()
-            val renew = rsp_et_repassword.text.toString()
+        rsp_commit_button.setOnClickListener {
+            val email = rsp_et_useremail.text.toString()
+            val old = rsp_et_oldpw.text.toString()
+            val new = rsp_et_newpassword.text.toString()
+            val renew = rsp_et_renewpassword.text.toString()
 
             when {
                 email != UserHelper.getEmail() -> "email错误".showToast(this)

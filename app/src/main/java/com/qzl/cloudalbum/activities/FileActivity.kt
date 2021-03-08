@@ -195,6 +195,7 @@ class FileActivity : BaseActivity() {
                                 if (filesAdapter!!.rename(newName)) {
                                     refreshFileList()
                                     "重命名成功".showToastOnUi(this@FileActivity)
+                                    toolShow(false)
                                 } else "重命名失败".showToastOnUi(this@FileActivity)
                             } catch (e: ConnectException) {
                                 e.printStackTrace()
@@ -282,6 +283,12 @@ class FileActivity : BaseActivity() {
             }
 
         }
+    }
+
+    override fun onBackPressed() {
+        if (filesAdapter?.isShowed == true)
+            toolShow(false)
+        else this.finish()
     }
 
 
@@ -461,19 +468,29 @@ class FileActivity : BaseActivity() {
                     AppDialog(this).setmTitle("请输入分享码").apply {
                         setPositiveButton {
                             val shareCode = getText()
-                            lifecycleScope.launch {
-                                try {
-                                    if (NetHelper.getShare(shareCode, this@FileActivity)) {
-                                        "已保存至/root/下".showToastOnUi(this@FileActivity)
+                            if (shareCode == "") {
+                                "请输入分享码".showToast(this@FileActivity)
+                            } else {
+                                lifecycleScope.launch {
+                                    try {
+                                        if (NetHelper.getShare(
+                                                shareCode,
+                                                thisPath,
+                                                this@FileActivity
+                                            )
+                                        ) {
+                                            "已保存至当前目录下".showToastOnUi(this@FileActivity)
+                                            refreshFileList()
+                                        }
+                                    } catch (e: ConnectException) {
+                                        e.printStackTrace()
+                                        netErr(this@FileActivity)
+                                    } catch (e: IOException) {
+                                        e.printStackTrace()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        "其他异常".showToastOnUi(this@FileActivity)
                                     }
-                                } catch (e: ConnectException) {
-                                    e.printStackTrace()
-                                    netErr(this@FileActivity)
-                                } catch (e: IOException) {
-                                    e.printStackTrace()
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                    "其他异常".showToastOnUi(this@FileActivity)
                                 }
                             }
                             dismiss()

@@ -8,7 +8,7 @@
 
 
     <EditText
-        android:id="@+id/rsp_et_username"
+        android:id="@+id/rsp_et_useremail"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_edit"
@@ -26,7 +26,7 @@
         app:layout_constraintVertical_bias="0.099" />
 
     <EditText
-        android:id="@+id/rsp_et_email"
+        android:id="@+id/rsp_et_oldpw"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
@@ -37,13 +37,12 @@
         android:maxLength="30"
         android:maxLines="1"
         android:padding="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/et_username"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/rsp_et_username"
-        app:layout_constraintTop_toBottomOf="@+id/rsp_et_username" />
+        app:layout_constraintStart_toStartOf="@+id/rsp_et_useremail"
+        app:layout_constraintTop_toBottomOf="@+id/rsp_et_useremail" />
 
     <EditText
-        android:id="@+id/rsp_et_password"
+        android:id="@+id/rsp_et_newpassword"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
@@ -54,13 +53,13 @@
         android:maxLength="15"
         android:maxLines="1"
         android:padding="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/rsp_et_email"
+        app:layout_constraintEnd_toEndOf="@+id/rsp_et_oldpw"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/rsp_et_email"
-        app:layout_constraintTop_toBottomOf="@+id/rsp_et_email" />
+        app:layout_constraintStart_toStartOf="@+id/rsp_et_oldpw"
+        app:layout_constraintTop_toBottomOf="@+id/rsp_et_oldpw" />
 
     <EditText
-        android:id="@+id/rsp_et_repassword"
+        android:id="@+id/rsp_et_renewpassword"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
@@ -71,27 +70,27 @@
         android:maxLength="15"
         android:maxLines="1"
         android:padding="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/rsp_et_password"
+        app:layout_constraintEnd_toEndOf="@+id/rsp_et_newpassword"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/rsp_et_password"
-        app:layout_constraintTop_toBottomOf="@+id/rsp_et_password" />
+        app:layout_constraintStart_toStartOf="@+id/rsp_et_newpassword"
+        app:layout_constraintTop_toBottomOf="@+id/rsp_et_newpassword" />
 
     <Button
-        android:id="@+id/rsp_button"
+        android:id="@+id/rsp_commit_button"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:padding="5dp"
         android:text="注册账号"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/rsp_et_repassword"
+        app:layout_constraintEnd_toEndOf="@+id/rsp_et_renewpassword"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/rsp_et_repassword"
-        app:layout_constraintTop_toBottomOf="@+id/rsp_et_repassword" />
+        app:layout_constraintStart_toStartOf="@+id/rsp_et_renewpassword"
+        app:layout_constraintTop_toBottomOf="@+id/rsp_et_renewpassword" />
 
     <Button
         android:theme="@style/Theme.CloudAlbum2"
-        android:id="@+id/rsp_button_cancel"
+        android:id="@+id/rsp_cancel_button"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -100,10 +99,10 @@
         android:textColor="@color/AlbumBlue"
         android:text="取消"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/rsp_et_repassword"
+        app:layout_constraintEnd_toEndOf="@+id/rsp_et_renewpassword"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/rsp_et_repassword"
-        app:layout_constraintTop_toBottomOf="@+id/rsp_button" />
+        app:layout_constraintStart_toStartOf="@+id/rsp_et_renewpassword"
+        app:layout_constraintTop_toBottomOf="@+id/rsp_commit_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

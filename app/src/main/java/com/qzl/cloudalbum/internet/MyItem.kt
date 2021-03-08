@@ -3,6 +3,7 @@ package com.qzl.cloudalbum.internet
 data class MyItem(
     val itemName: String,
     val itemType: String,
+    val time: MyTime,
     val subItems: List<MyItem>,
     val file: MyFileStorage?,
     val hidden: Boolean

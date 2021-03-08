@@ -21,7 +21,7 @@ interface DownloadPicDao {
     suspend fun loadAllDLPics(): List<DownloadPic>//返回所有DownloadPic的列表
 
     //查
-    @Query("select *from DownloadPic where email=:email")//查找DownloadPic
+    @Query("select *from DownloadPic where email=:email order by dLTime desc")//查找DownloadPic
     suspend fun loadDLPics(email: String): List<DownloadPic>//返回DownloadPic的列表
 
 

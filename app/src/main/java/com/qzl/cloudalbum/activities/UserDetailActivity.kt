@@ -61,17 +61,35 @@ class UserDetailActivity : BaseActivity() {
             lifecycleScope.launch {
                 try {
                     if (!verify) {
-                        if (NetHelper.verifyEmail(null, this@UserDetailActivity)) {
-                            "验证码以发送至邮箱${UserHelper.getEmail()}".showToastOnUi(this@UserDetailActivity)
-                            val myDialog: AlertDialog.Builder =
-                                AlertDialog.Builder(this@UserDetailActivity)
-                            val edit = EditText(this@UserDetailActivity)
-                            myDialog.setTitle("请输入验证码").setView(edit)
+                        lifecycleScope.launch {
+                            try {
+                                NetHelper.verifyEmail(null, this@UserDetailActivity)
+                                "验证码以发送至邮箱${UserHelper.getEmail()}".showToastOnUi(this@UserDetailActivity)
 
-                            myDialog.setPositiveButton("确定") { _, _ ->
+                            } catch (e: ConnectException) {
+                                e.printStackTrace()
+                                //无网络提示
+                                "无网络的样子".showToast(this@UserDetailActivity)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                //测试提示
+                                "其他异常".showToast(this@UserDetailActivity)
+                            }
+
+                        }
+
+                        val myDialog: AlertDialog.Builder =
+                            AlertDialog.Builder(this@UserDetailActivity)
+                        val edit = EditText(this@UserDetailActivity)
+                        myDialog.setTitle("请输入验证码").setView(edit)
+
+                        myDialog.setPositiveButton("确定") { _, _ ->
+                            lifecycleScope.launch {
                                 try {
-                                    lifecycleScope.launch {
-                                        val code = edit.text.toString()
+                                    val code = edit.text.toString()
+                                    if (code == "") {
+                                        "请输入".showToastOnUi(this@UserDetailActivity)
+                                    } else {
                                         if (NetHelper.verifyEmail(code, this@UserDetailActivity)) {
                                             "邮箱已验证".showToastOnUi(this@UserDetailActivity)
                                             refresh()
@@ -79,30 +97,28 @@ class UserDetailActivity : BaseActivity() {
                                             "验证失败".showToastOnUi(this@UserDetailActivity)
                                         }
                                     }
-
                                 } catch (e: ConnectException) {
                                     e.printStackTrace()
-                                    //无网络提示
-                                    "无网络的样子".showToast(this@UserDetailActivity)
+                                    netErr(this@UserDetailActivity)
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
                                 } catch (e: Exception) {
                                     e.printStackTrace()
-                                    //测试提示
-                                    "其他异常".showToast(this@UserDetailActivity)
+                                    "其他异常".showToastOnUi(this@UserDetailActivity)
                                 }
-
                             }
-                            myDialog.show()
                         }
+                        myDialog.show()
 
 
                     } else "邮箱已验证".showToastOnUi(this@UserDetailActivity)
                 } catch (e: ConnectException) {
                     e.printStackTrace()
-                    //无网络提示
                     netErr(this@UserDetailActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    //测试提示
                     "其他异常".showToastOnUi(this@UserDetailActivity)
                 }
 

@@ -18,15 +18,15 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        rsp_button_cancel.setOnClickListener {
+        rsp_cancel_button.setOnClickListener {
             finish()
         }
 
-        rsp_button.setOnClickListener {
-            val name = rsp_et_username.text.toString()
-            val email = rsp_et_email.text.toString()
-            val password = rsp_et_password.text.toString()
-            val repassword = rsp_et_repassword.text.toString()
+        rsp_commit_button.setOnClickListener {
+            val name = rsp_et_useremail.text.toString()
+            val email = rsp_et_oldpw.text.toString()
+            val password = rsp_et_newpassword.text.toString()
+            val repassword = rsp_et_renewpassword.text.toString()
 
             lifecycleScope.launch {
                 try {

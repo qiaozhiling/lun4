@@ -182,7 +182,7 @@ interface CldAbService {
     @POST("/catch-share")
     fun catchShare(
         @Query("shareCode") targetShareCode: String,
-        @Query("targetPath") itemPathToSaveItems: String = "/root/",
+        @Query("targetPath") itemPathToSaveItems: String,
         @Header("Cookie") cookie: String? = UserHelper.getCookie()
     ): Call<MyResult<Boolean>>
 

@@ -2,7 +2,6 @@ package com.qzl.cloudalbum.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -102,12 +101,11 @@ class FilesAdapter(
         val item = subItemList.get(position)//子项json对象
         val itemName = item.itemName//子项名字
         val itemType = item.itemType//子项类型
+        val time = item.time//上传时间
 
         if (itemType == "DIR") {//是文件夹
             holder.fileItemImage.setImageResource(R.mipmap.dir)
-            holder.fileItemTime.text = "DIR"
         } else if (itemType == "FILE") {//图片
-            holder.fileItemTime.text = "FILE"
             val url =
                 "http://39.104.71.38:8080${item.file?.thumbnailURL}"
 
@@ -124,6 +122,7 @@ class FilesAdapter(
         if (item.hidden) holder.fileItemName.setTextColor(Color.GRAY)
         else holder.fileItemName.setTextColor(Color.BLACK)
 
+        holder.fileItemTime.text = time.createTime
         holder.fileItemCheckbox.isChecked = subItemList[position].getCheckedStatus()//选框选中
         holder.mposition = position//位置
         holder.fileItemName.text = itemName//显示内容 子项名字

@@ -18,12 +18,12 @@ class FindPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_password)
 
-        rsp_button_cancel.setOnClickListener {
+        rsp_cancel_button.setOnClickListener {
             finish()
         }
 
         get.setOnClickListener {
-            val email = rsp_et_username.text.toString()
+            val email = rsp_et_useremail.text.toString()
             if (email != "") {
                 lifecycleScope.launch {
                     try {
@@ -49,11 +49,11 @@ class FindPasswordActivity : AppCompatActivity() {
 
         }
 
-        rsp_button.setOnClickListener {
-            val email = rsp_et_username.text.toString()
-            val code = rsp_et_email.text.toString()
-            val pw = rsp_et_password.text.toString()
-            val repw = rsp_et_repassword.text.toString()
+        rsp_commit_button.setOnClickListener {
+            val email = rsp_et_useremail.text.toString()
+            val code = rsp_et_oldpw.text.toString()
+            val pw = rsp_et_newpassword.text.toString()
+            val repw = rsp_et_renewpassword.text.toString()
 
             when {
                 (email == "") -> "请输入email".showToast(this)
