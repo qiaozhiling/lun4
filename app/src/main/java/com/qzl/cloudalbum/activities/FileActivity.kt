@@ -262,6 +262,28 @@ class FileActivity : BaseActivity() {
             cancel_search_btn.visibility = View.GONE
         }
 
+        //下拉刷新
+        swipere_file.apply {
+            setColorSchemeResources(R.color.black, R.color.AlbumBlue, R.color.AlbumBlue2)
+
+            setOnRefreshListener {
+                lifecycleScope.launch {
+                    try {
+                        refreshFileList()
+                    } catch (e: ConnectException) {
+                        e.printStackTrace()
+                        netErr(this@FileActivity)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        "其他异常".showToastOnUi(this@FileActivity)
+                    } finally {
+                        isRefreshing = false
+                    }
+                }
+            }
+        }
 
     }
 
@@ -444,23 +466,6 @@ class FileActivity : BaseActivity() {
                             dismiss()
                         }
                         show()
-                    }
-                }
-
-                R.id.refresh_item -> {//刷新
-                    lifecycleScope.launch {
-                        try {
-                            refreshFileList()
-                        } catch (e: ConnectException) {
-                            e.printStackTrace()
-                            netErr(this@FileActivity)
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            "其他异常".showToastOnUi(this@FileActivity)
-                        }
-
                     }
                 }
 
