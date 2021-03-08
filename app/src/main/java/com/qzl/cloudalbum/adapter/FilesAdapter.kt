@@ -122,7 +122,8 @@ class FilesAdapter(
         if (item.hidden) holder.fileItemName.setTextColor(Color.GRAY)
         else holder.fileItemName.setTextColor(Color.BLACK)
 
-        holder.fileItemTime.text = time.createTime
+        holder.fileItemTime.text = time.createTime.replace("T"," ")
+            .substringBefore(".")
         holder.fileItemCheckbox.isChecked = subItemList[position].getCheckedStatus()//选框选中
         holder.mposition = position//位置
         holder.fileItemName.text = itemName//显示内容 子项名字
