@@ -308,7 +308,7 @@ class FilesAdapter(
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
-    //保存file
+    //保存file到本地
     private fun saveFile(file: File?, pathToSvae: String) {
         val fis = FileInputStream(file)
         val fos = FileOutputStream(pathToSvae)
